@@ -6,9 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.3'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'me.tatarka:gradle-retrolambda:3.2.3'
     }
 }
 
@@ -20,4 +18,24 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+// Define versions in a single place
+ext {
+    // Sdk and tools
+    minSdkVersion = 21
+    targetSdkVersion = 24
+    compileSdkVersion = 24
+    buildToolsVersion = '24.0.1'
+
+    // App's dependencies
+    supportLibraryVersion = '24.2.0'
+    retrofitVersion = '2.0.0-beta2'
+    sqlBriteVersion = '0.6.3'
+    okHttpVersion = '3.3.1'
+    glideVersion = '3.7.0'
+    rxJavaVersion = '1.1.3'
+    rxAndroidVersion = '1.1.0'
+
+    junitVersion = '4.12'
 }
