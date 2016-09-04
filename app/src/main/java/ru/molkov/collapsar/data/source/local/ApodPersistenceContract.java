@@ -2,8 +2,6 @@ package ru.molkov.collapsar.data.source.local;
 
 import android.provider.BaseColumns;
 
-import ru.molkov.collapsar.utils.Constants;
-
 public class ApodPersistenceContract {
 
     private ApodPersistenceContract() {
