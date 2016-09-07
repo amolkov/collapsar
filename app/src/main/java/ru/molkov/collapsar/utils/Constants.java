@@ -1,7 +1,7 @@
 package ru.molkov.collapsar.utils;
 
 public class Constants {
-    public static final int PAGE_SIZE = 14;
+    public static final int PAGE_SIZE = 20;
 
     public static final String APOD_DATE_FORMAT = "yyyy-MM-dd";
 

@@ -22,25 +22,27 @@ import ru.molkov.collapsar.utils.DateUtils;
 import ru.molkov.collapsar.utils.palette.PaletteBitmap;
 import ru.molkov.collapsar.utils.palette.PaletteBitmapTranscoder;
 import ru.molkov.collapsar.utils.palette.PaletteBitmapViewTarget;
-import ru.molkov.collapsar.views.OnClickListener;
-import ru.molkov.collapsar.views.adapters.AbstractAdapter;
+import ru.molkov.collapsar.views.OnItemClickListener;
+import ru.molkov.collapsar.views.OnLoadMoreListener;
+import ru.molkov.collapsar.views.adapters.EndlessRecyclerViewAdapter;
 
-public class RecentImagesAdapter extends AbstractAdapter<Apod> {
+public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
     private List<Apod> mData;
-    private OnClickListener mOnClickListener;
+    private OnItemClickListener mOnItemClickListener;
+    private OnLoadMoreListener mOnLoadMoreListener;
 
     public RecentImagesAdapter(Context context, RecyclerView recyclerView) {
         super(context, recyclerView);
-        this.mData = new ArrayList<>();
+        mData = new ArrayList<>();
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateBasicItemViewHolder(ViewGroup parent, int viewType) {
-        return new RecentImagesViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.apod_list_content, parent, false), mOnClickListener);
+    public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
+        return new RecentImagesViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.apod_list_content, parent, false), mOnItemClickListener);
     }
 
     @Override
-    public void onBindItemView(RecyclerView.ViewHolder genericHolder, int position) {
+    public void onBindItemViewHolder(RecyclerView.ViewHolder genericHolder, int position) {
         final RecentImagesViewHolder holder = (RecentImagesViewHolder) genericHolder;
         final Apod apod = mData.get(position);
 
@@ -76,23 +78,23 @@ public class RecentImagesAdapter extends AbstractAdapter<Apod> {
     }
 
     @Override
-    public List<Apod> getData() {
+    public void onLoadMore() {
+        if (mOnLoadMoreListener != null) {
+            mOnLoadMoreListener.onLoadMore();
+        }
+    }
+
+    @Override
+    public List<Apod> getItems() {
         return mData;
     }
 
-    public void setData(List<Apod> data) {
-        mData.clear();
-        mData.addAll(data);
-        notifyDataSetChanged();
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+        mOnLoadMoreListener = onLoadMoreListener;
     }
 
-    public void addData(List<Apod> data) {
-        mData.addAll(data);
-        notifyDataSetChanged();
-    }
-
-    public void setOnClickListener(OnClickListener onClickListener) {
-        this.mOnClickListener = onClickListener;
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
     }
 
     class RecentImagesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -100,22 +102,24 @@ public class RecentImagesAdapter extends AbstractAdapter<Apod> {
         public TextView mDate;
         public ImageView mImage;
         public RelativeLayout mFooter;
-        public OnClickListener mOnClickListener;
+        public OnItemClickListener mOnItemClickListener;
 
-        public RecentImagesViewHolder(View itemView, OnClickListener onClickListener) {
+        public RecentImagesViewHolder(View itemView, OnItemClickListener onClickListener) {
             super(itemView);
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mDate = (TextView) itemView.findViewById(R.id.date);
             mImage = (ImageView) itemView.findViewById(R.id.image);
             mFooter = (RelativeLayout) itemView.findViewById(R.id.footer);
-            mOnClickListener = onClickListener;
+            mOnItemClickListener = onClickListener;
 
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            mOnClickListener.onClick(v, getAdapterPosition());
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(v, getAdapterPosition());
+            }
         }
     }
 }

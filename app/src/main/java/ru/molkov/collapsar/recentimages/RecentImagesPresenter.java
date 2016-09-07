@@ -55,7 +55,6 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
                     @Override
                     public void onCompleted() {
                         mView.setLoadingIndicator(false);
-                        mView.removeItemAdapter();
                     }
 
                     @Override
@@ -75,7 +74,7 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
     @Override
     public void updateApods(boolean isForceUpdate) {
         if (isForceUpdate || mFirstLoad) {
-            mView.setLoadingIndicator(true);
+            mView.setRefreshIndicator(true);
             mFirstLoad = false;
         }
         mSubscriptions.clear();
@@ -88,7 +87,7 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
                 .subscribe(new Observer<List<Apod>>() {
                     @Override
                     public void onCompleted() {
-                        mView.setLoadingIndicator(false);
+                        mView.setRefreshIndicator(false);
                     }
 
                     @Override

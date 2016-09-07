@@ -14,6 +14,7 @@ import java.util.List;
 import ru.molkov.collapsar.Injection;
 import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.data.model.Apod;
+import ru.molkov.collapsar.views.OnItemClickListener;
 import ru.molkov.collapsar.views.OnLoadMoreListener;
 
 public class RecentImagesFragment extends Fragment implements RecentImagesContract.View {
@@ -40,8 +41,21 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_recent_images, container, false);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.apod_list);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (mAdapter.getItemViewType(position)) {
+                    case RecentImagesAdapter.VIEW_TYPE_ITEM:
+                        return 1;
+                    case RecentImagesAdapter.VIEW_TYPE_PROGRESS:
+                        return 2;
+                    default:
+                        return -1;
+                }
+            }
+        });
         recyclerView.setLayoutManager(gridLayoutManager);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh_layout);
@@ -61,6 +75,12 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
             @Override
             public void onLoadMore() {
                 mPresenter.loadApods();
+            }
+        });
+        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                //TODO
             }
         });
         recyclerView.setAdapter(mAdapter);
@@ -87,22 +107,21 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
 
     @Override
     public void showLoadedApods(List<Apod> apods) {
-        mAdapter.addData(apods);
+        mAdapter.addItems(apods);
     }
 
     @Override
     public void showUpdatedApods(List<Apod> apods) {
-        mAdapter.setData(apods);
+        mAdapter.setItems(apods);
     }
 
     @Override
     public void setLoadingIndicator(boolean isActive) {
-        mSwipeRefreshLayout.setRefreshing(isActive);
+        mAdapter.setLoading(isActive);
     }
 
     @Override
-    public void removeItemAdapter() {
-        mAdapter.removeItem(null);
-        mAdapter.setLoading(false);
+    public void setRefreshIndicator(boolean isActive) {
+        mSwipeRefreshLayout.setRefreshing(isActive);
     }
 }
