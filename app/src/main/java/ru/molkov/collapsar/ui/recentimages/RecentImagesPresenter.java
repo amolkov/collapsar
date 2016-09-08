@@ -1,4 +1,4 @@
-package ru.molkov.collapsar.recentimages;
+package ru.molkov.collapsar.ui.recentimages;
 
 import java.util.Date;
 import java.util.List;
@@ -30,7 +30,7 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
 
     @Override
     public void subscribe() {
-        updateApods(false);
+        refreshApods(false);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
     }
 
     @Override
-    public void updateApods(boolean isForceUpdate) {
+    public void refreshApods(boolean isForceUpdate) {
         if (isForceUpdate || mFirstLoad) {
             mView.setRefreshIndicator(true);
             mFirstLoad = false;

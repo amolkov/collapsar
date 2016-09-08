@@ -1,10 +1,10 @@
-package ru.molkov.collapsar.recentimages;
+package ru.molkov.collapsar.ui.recentimages;
 
 import java.util.List;
 
-import ru.molkov.collapsar.BasePresenter;
-import ru.molkov.collapsar.BaseView;
 import ru.molkov.collapsar.data.model.Apod;
+import ru.molkov.collapsar.ui.base.BasePresenter;
+import ru.molkov.collapsar.ui.base.BaseView;
 
 public interface RecentImagesContract {
 
@@ -23,6 +23,6 @@ public interface RecentImagesContract {
 
         void loadApods();
 
-        void updateApods(boolean isForeUpdate);
+        void refreshApods(boolean isForeUpdate);
     }
 }

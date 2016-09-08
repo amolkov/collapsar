@@ -1,4 +1,4 @@
-package ru.molkov.collapsar.recentimages;
+package ru.molkov.collapsar.ui.recentimages;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

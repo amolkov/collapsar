@@ -1,4 +1,4 @@
-package ru.molkov.collapsar.recentimages;
+package ru.molkov.collapsar.ui.recentimages;
 
 import android.content.Context;
 import android.support.v7.graphics.Palette;

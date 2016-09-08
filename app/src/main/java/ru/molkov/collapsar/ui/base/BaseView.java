@@ -1,4 +1,4 @@
-package ru.molkov.collapsar;
+package ru.molkov.collapsar.ui.base;
 
 public interface BaseView<T> {
 
