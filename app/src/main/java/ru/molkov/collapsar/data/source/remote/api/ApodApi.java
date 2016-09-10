@@ -1,7 +1,7 @@
 package ru.molkov.collapsar.data.source.remote.api;
 
-import retrofit.http.GET;
-import retrofit.http.Query;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 import ru.molkov.collapsar.data.model.Apod;
 import rx.Observable;
 

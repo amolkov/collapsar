@@ -2,12 +2,12 @@ package ru.molkov.collapsar.data.source.remote;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.OkHttpClient;
 
-import retrofit.CallAdapter;
-import retrofit.Converter;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
+import okhttp3.OkHttpClient;
+import retrofit2.CallAdapter;
+import retrofit2.Converter;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import ru.molkov.collapsar.data.core.ErrorHandlingCallAdapterFactory;
 
 public abstract class AbstractRemoteDataSource {

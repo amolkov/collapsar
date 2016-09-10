@@ -2,8 +2,8 @@ package ru.molkov.collapsar.data.core.error;
 
 import java.io.IOException;
 
-import retrofit.HttpException;
-import retrofit.Response;
+import retrofit2.Response;
+import retrofit2.adapter.rxjava.HttpException;
 import ru.molkov.collapsar.App;
 import ru.molkov.collapsar.R;
 

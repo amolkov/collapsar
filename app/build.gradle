@@ -37,9 +37,9 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:palette-v7:$rootProject.supportLibraryVersion"
 
-    compile "com.squareup.retrofit:retrofit:$rootProject.retrofitVersion"
-    compile "com.squareup.retrofit:converter-gson:$rootProject.retrofitVersion"
-    compile "com.squareup.retrofit:adapter-rxjava:$rootProject.retrofitVersion"
+    compile "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
+    compile "com.squareup.retrofit2:adapter-rxjava:$rootProject.retrofitVersion"
     compile "com.squareup.sqlbrite:sqlbrite:$rootProject.sqlBriteVersion"
     compile "com.squareup.okhttp3:okhttp:$rootProject.okHttpVersion"
     compile "com.github.bumptech.glide:glide:$rootProject.glideVersion"

@@ -4,16 +4,16 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import retrofit.Call;
-import retrofit.CallAdapter;
-import retrofit.HttpException;
-import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
+import retrofit2.Call;
+import retrofit2.CallAdapter;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.HttpException;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import ru.molkov.collapsar.data.core.error.RetrofitException;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class ErrorHandlingCallAdapterFactory implements CallAdapter.Factory {
+public class ErrorHandlingCallAdapterFactory extends CallAdapter.Factory {
     private final RxJavaCallAdapterFactory mOriginal;
 
     private ErrorHandlingCallAdapterFactory() {
