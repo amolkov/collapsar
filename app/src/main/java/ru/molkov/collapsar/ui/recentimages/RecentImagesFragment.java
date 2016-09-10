@@ -2,8 +2,6 @@ package ru.molkov.collapsar.ui.recentimages;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -115,6 +113,11 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
     @Override
     public void setRefreshIndicator(boolean isActive) {
         mSwipeRefreshLayout.setRefreshing(isActive);
+    }
+
+    @Override
+    public void showError(String error) {
+        Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
     }
 
     private OnLoadMoreListener mOnLoadMoreListener = new OnLoadMoreListener() {

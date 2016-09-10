@@ -1,6 +1,7 @@
 package ru.molkov.collapsar.data;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -66,13 +67,7 @@ public class ApodRepository implements IRepository<Apod> {
     @Override
     public Observable<List<Apod>> getList(List<Date> dates) {
         return Observable
-                .from(dates)
-                .flatMap(new Func1<Date, Observable<Apod>>() {
-                    @Override
-                    public Observable<Apod> call(Date date) {
-                        return ApodRepository.this.get(date);
-                    }
-                })
+                .merge(getObservables(dates))
                 .toSortedList(new Func2<Apod, Apod, Integer>() {
                     @Override
                     public Integer call(Apod first, Apod second) {
@@ -112,5 +107,13 @@ public class ApodRepository implements IRepository<Apod> {
         if (apod != null) {
             mCachedData.put(DateUtils.toString(apod.getDate()), apod);
         }
+    }
+
+    private List<Observable<Apod>> getObservables(List<Date> dates) {
+        List<Observable<Apod>> observables = new ArrayList<>();
+        for (Date date : dates) {
+            observables.add(ApodRepository.this.get(date));
+        }
+        return observables;
     }
 }

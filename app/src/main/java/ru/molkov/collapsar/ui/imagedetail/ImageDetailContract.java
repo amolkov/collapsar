@@ -16,6 +16,8 @@ public interface ImageDetailContract {
         void setExplanation(String explanation);
 
         void setCopyright(String copyright);
+
+        void showError(String error);
     }
 
     interface Presenter extends BasePresenter {

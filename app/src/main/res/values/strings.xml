@@ -2,4 +2,12 @@
     <string name="app_name">Collapsar</string>
 
     <string name="image_description">Image</string>
+
+    <!-- exceptions -->
+    <string name="error_forbidden">An invalid api key</string>
+    <string name="error_too_many_requests">You have exceeded your rate limit, try again later</string>
+    <string name="error_client">Oops, bad request</string>
+    <string name="error_server">Internal server error, try again later</string>
+    <string name="error_network">It seems you have no network connection</string>
+    <string name="error_unexpected">Uh oh, something went wrong</string>
 </resources>

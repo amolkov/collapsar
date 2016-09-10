@@ -17,6 +17,8 @@ public interface RecentImagesContract {
         void setLoadingIndicator(boolean isActive);
 
         void setRefreshIndicator(boolean isActive);
+
+        void showError(String error);
     }
 
     interface Presenter extends BasePresenter {

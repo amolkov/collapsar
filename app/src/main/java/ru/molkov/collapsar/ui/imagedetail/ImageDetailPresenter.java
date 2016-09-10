@@ -3,6 +3,7 @@ package ru.molkov.collapsar.ui.imagedetail;
 import java.util.Date;
 
 import ru.molkov.collapsar.data.IRepository;
+import ru.molkov.collapsar.data.core.error.RetrofitException;
 import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.utils.DateUtils;
 import rx.Observer;
@@ -10,6 +11,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class ImageDetailPresenter implements ImageDetailContract.Presenter {
     private final IRepository<Apod> mRepository;
@@ -53,8 +55,11 @@ public class ImageDetailPresenter implements ImageDetailContract.Presenter {
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        System.out.println(e);
+                    public void onError(Throwable throwable) {
+                        RetrofitException exception = (RetrofitException) throwable;
+                        Timber.e(throwable, "There was an error loading image");
+
+                        mView.showError(exception.getMessage());
                     }
 
                     @Override

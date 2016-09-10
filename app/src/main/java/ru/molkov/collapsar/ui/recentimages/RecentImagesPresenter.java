@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import ru.molkov.collapsar.data.IRepository;
+import ru.molkov.collapsar.data.core.error.RetrofitException;
 import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.utils.Constants;
 import ru.molkov.collapsar.utils.DateUtils;
@@ -12,6 +13,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class RecentImagesPresenter implements RecentImagesContract.Presenter {
     private final IRepository<Apod> mRepository;
@@ -58,7 +60,11 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(Throwable throwable) {
+                        RetrofitException exception = (RetrofitException) throwable;
+                        Timber.e(throwable, "There was an error loading recent images");
+
+                        mView.showError(exception.getMessage());
                         mView.setLoadingIndicator(false);
                     }
 
@@ -91,8 +97,12 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.setLoadingIndicator(false);
+                    public void onError(Throwable throwable) {
+                        RetrofitException exception = (RetrofitException) throwable;
+                        Timber.e(throwable, "There was an error refreshing recent images");
+
+                        mView.showError(exception.getMessage());
+                        mView.setRefreshIndicator(false);
                     }
 
                     @Override

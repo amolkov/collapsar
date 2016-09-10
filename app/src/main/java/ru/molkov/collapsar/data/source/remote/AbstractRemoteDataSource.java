@@ -8,7 +8,7 @@ import retrofit.CallAdapter;
 import retrofit.Converter;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
+import ru.molkov.collapsar.data.core.ErrorHandlingCallAdapterFactory;
 
 public abstract class AbstractRemoteDataSource {
     private final Retrofit mRetrofit;
@@ -38,6 +38,6 @@ public abstract class AbstractRemoteDataSource {
     }
 
     private CallAdapter.Factory createCallAdapterFactory() {
-        return RxJavaCallAdapterFactory.create();
+        return ErrorHandlingCallAdapterFactory.create();
     }
 }
