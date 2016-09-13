@@ -1,6 +1,7 @@
 package ru.molkov.collapsar.ui.imagedetail;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import ru.molkov.collapsar.utils.palette.PaletteBitmapTranscoder;
 public class ImageDetailFragment extends Fragment implements ImageDetailContract.View {
     public static final String ARGUMENT_APOD_DATE = "APOD_DATE";
     public static final String ARGUMENT_APOD_IMAGE_URL = "APOD_IMAGE_URL";
+    public static final String ARGUMENT_APOD_MEDIA_TYPE = "APOD_MEDIA_TYPE";
 
     private ImageDetailContract.Presenter mPresenter;
 

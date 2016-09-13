@@ -6,6 +6,7 @@ import ru.molkov.collapsar.data.IRepository;
 import ru.molkov.collapsar.data.core.error.RetrofitException;
 import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.utils.DateUtils;
+import ru.molkov.collapsar.utils.ImageUtils;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -71,7 +72,13 @@ public class ImageDetailPresenter implements ImageDetailContract.Presenter {
     }
 
     private void showApod(Apod apod) {
-        mView.setTitleContainerColor(apod.getUrl());
+        String url;
+        if (apod.getMediaType().equalsIgnoreCase("video")) {
+            url = ImageUtils.getThumbnailUrl(apod.getUrl());
+        } else {
+            url = apod.getUrl();
+        }
+        mView.setTitleContainerColor(url);
         mView.setTitle(apod.getTitle());
         mView.setDate(DateUtils.friendlyFormat(apod.getDate()));
         mView.setExplanation(apod.getExplanation());

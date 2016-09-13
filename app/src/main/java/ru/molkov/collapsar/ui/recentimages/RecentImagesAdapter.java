@@ -19,6 +19,7 @@ import java.util.List;
 import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.utils.DateUtils;
+import ru.molkov.collapsar.utils.ImageUtils;
 import ru.molkov.collapsar.utils.palette.PaletteBitmap;
 import ru.molkov.collapsar.utils.palette.PaletteBitmapTranscoder;
 import ru.molkov.collapsar.utils.palette.PaletteBitmapViewTarget;
@@ -46,13 +47,22 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
         final RecentImagesViewHolder holder = (RecentImagesViewHolder) genericHolder;
         final Apod apod = mData.get(position);
 
-        holder.mImage.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
         holder.mFooter.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
+        holder.mImage.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
+
+        String url;
+        if (apod.getMediaType().equalsIgnoreCase("video")) {
+            url = ImageUtils.getThumbnailUrl(apod.getUrl());
+            holder.mYoutubeIcon.setVisibility(View.VISIBLE);
+        } else {
+            url = apod.getUrlHd();
+            holder.mYoutubeIcon.setVisibility(View.GONE);
+        }
 
         holder.mTitle.setText(apod.getTitle());
         holder.mDate.setText(DateUtils.friendlyFormat(apod.getDate()));
         Glide.with(getContext())
-                .load(apod.getUrl())
+                .load(url)
                 .asBitmap()
                 .transcode(new PaletteBitmapTranscoder(getContext()), PaletteBitmap.class)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -101,14 +111,17 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
         public TextView mTitle;
         public TextView mDate;
         public ImageView mImage;
+        public ImageView mYoutubeIcon;
         public RelativeLayout mFooter;
         public OnItemClickListener mOnItemClickListener;
 
         public RecentImagesViewHolder(View itemView, OnItemClickListener onClickListener) {
             super(itemView);
+            mImage = (ImageView) itemView.findViewById(R.id.image);
+            mYoutubeIcon = (ImageView) itemView.findViewById(R.id.youtube_icon);
+
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mDate = (TextView) itemView.findViewById(R.id.date);
-            mImage = (ImageView) itemView.findViewById(R.id.image);
             mFooter = (RelativeLayout) itemView.findViewById(R.id.footer);
             mOnItemClickListener = onClickListener;
 
