@@ -11,6 +11,7 @@ import ru.molkov.collapsar.utils.DateUtils;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.CompositeException;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -61,11 +62,10 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
 
                     @Override
                     public void onError(Throwable throwable) {
-                        RetrofitException exception = (RetrofitException) throwable;
-                        Timber.e(throwable, "There was an error loading recent images");
-
-                        mView.showError(exception.getMessage());
+                        Timber.i(throwable, "There was an error loading recent images");
                         mView.setLoadingIndicator(false);
+
+                        processError(throwable);
                     }
 
                     @Override
@@ -98,11 +98,10 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
 
                     @Override
                     public void onError(Throwable throwable) {
-                        RetrofitException exception = (RetrofitException) throwable;
-                        Timber.e(throwable, "There was an error refreshing recent images");
-
-                        mView.showError(exception.getMessage());
+                        Timber.i(throwable, "There was an error refreshing recent images");
                         mView.setRefreshIndicator(false);
+
+                        processError(throwable);
                     }
 
                     @Override
@@ -116,5 +115,18 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
 
     private void updateLastLoadedDate(Date lastLoadedDate) {
         mLastLoadedDate = lastLoadedDate;
+    }
+
+    private void processError(Throwable throwable) {
+        RetrofitException exception;
+        if (throwable instanceof CompositeException) {
+            //TODO fix me
+            CompositeException compositeException = (CompositeException) throwable;
+            exception = (RetrofitException) compositeException.getExceptions().get(0);
+        } else {
+            exception = (RetrofitException) throwable;
+        }
+
+        mView.showError(exception.getMessage());
     }
 }

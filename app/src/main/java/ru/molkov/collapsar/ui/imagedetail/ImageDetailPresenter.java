@@ -56,9 +56,9 @@ public class ImageDetailPresenter implements ImageDetailContract.Presenter {
 
                     @Override
                     public void onError(Throwable throwable) {
-                        RetrofitException exception = (RetrofitException) throwable;
-                        Timber.e(throwable, "There was an error loading image");
+                        Timber.i(throwable, "There was an error loading image");
 
+                        RetrofitException exception = (RetrofitException) throwable;
                         mView.showError(exception.getMessage());
                     }
 
