@@ -1,7 +1,16 @@
 <resources>
     <string name="app_name">Collapsar</string>
 
-    <string name="image_description">Image</string>
+    <string name="key_light_theme">light_theme</string>
+    <string name="key_dark_theme">dark_theme</string>
+
+    <string name="title_photo">Photo</string>
+    <string name="title_video">Video</string>
+    <string name="title_explanation">explanation</string>
+
+    <string name="action_download">Download</string>
+    <string name="action_share">Share</string>
+    <string name="action_like">Like</string>
 
     <!-- exceptions -->
     <string name="error_forbidden">Invalid api key</string>

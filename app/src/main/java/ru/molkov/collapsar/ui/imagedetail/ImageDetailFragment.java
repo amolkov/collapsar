@@ -1,24 +1,16 @@
 package ru.molkov.collapsar.ui.imagedetail;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-
 import ru.molkov.collapsar.R;
-import ru.molkov.collapsar.utils.palette.PaletteBitmap;
-import ru.molkov.collapsar.utils.palette.PaletteBitmapTranscoder;
+import ru.molkov.collapsar.utils.ThemeUtils;
 
 public class ImageDetailFragment extends Fragment implements ImageDetailContract.View {
     public static final String ARGUMENT_APOD_DATE = "APOD_DATE";
@@ -38,6 +30,14 @@ public class ImageDetailFragment extends Fragment implements ImageDetailContract
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_image_detail, container, false);
+
+        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+            ((ImageButton) root.findViewById(R.id.fragment_image_detail_download_btn)).setImageResource(R.drawable.ic_download_light);
+            ((ImageButton) root.findViewById(R.id.fragment_image_detail_share_btn)).setImageResource(R.drawable.ic_send_light);
+        } else {
+            ((ImageButton) root.findViewById(R.id.fragment_image_detail_download_btn)).setImageResource(R.drawable.ic_download_dark);
+            ((ImageButton) root.findViewById(R.id.fragment_image_detail_share_btn)).setImageResource(R.drawable.ic_send_dark);
+        }
 
         return root;
     }
@@ -60,62 +60,26 @@ public class ImageDetailFragment extends Fragment implements ImageDetailContract
     }
 
     @Override
-    public void setTitleContainerColor(String url) {
-        final LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.title_container);
-        Glide.with(this)
-                .load(url)
-                .asBitmap()
-                .transcode(new PaletteBitmapTranscoder(getActivity()), PaletteBitmap.class)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(new SimpleTarget<PaletteBitmap>() {
-                    @Override
-                    public void onResourceReady(PaletteBitmap resource, GlideAnimation<? super PaletteBitmap> glideAnimation) {
-                        Palette palette = resource.getPalette();
-                        if (palette != null) {
-                            Palette.Swatch s = palette.getVibrantSwatch();
-                            if (s == null) {
-                                s = palette.getDarkVibrantSwatch();
-                            }
-                            if (s == null) {
-                                s = palette.getLightVibrantSwatch();
-                            }
-                            if (s != null) {
-                                linearLayout.setBackgroundColor(palette.getVibrantColor(s.getRgb()));
-                            }
-                        }
-                    }
-                });
-    }
-
-    @Override
     public void setTitle(String title) {
-        TextView view = (TextView) getActivity().findViewById(R.id.title);
+        TextView view = (TextView) getActivity().findViewById(R.id.fragment_image_detail_title);
         if (view != null) {
             view.setText(title);
         }
     }
 
     @Override
-    public void setDate(String date) {
-        TextView view = (TextView) getActivity().findViewById(R.id.date);
+    public void setSubtitle(String subtitle) {
+        TextView view = (TextView) getActivity().findViewById(R.id.fragment_image_detail_subtitle);
         if (view != null) {
-            view.setText(date);
+            view.setText(subtitle);
         }
     }
 
     @Override
     public void setExplanation(String explanation) {
-        TextView view = (TextView) getActivity().findViewById(R.id.explanation);
+        TextView view = (TextView) getActivity().findViewById(R.id.fragment_image_detail_explanation);
         if (view != null) {
             view.setText(explanation);
-        }
-    }
-
-    @Override
-    public void setCopyright(String copyright) {
-        TextView view = (TextView) getActivity().findViewById(R.id.copyright);
-        if (view != null) {
-            view.setText(copyright);
         }
     }
 

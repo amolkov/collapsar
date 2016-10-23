@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- style -->
+    <declare-styleable name="colorBackground">
+        <attr name="colorBackground" format="reference|color" />
+    </declare-styleable>
+
+    <declare-styleable name="colorTitle">
+        <attr name="colorTitle" format="reference|color" />
+    </declare-styleable>
+
+    <declare-styleable name="colorSubtitle">
+        <attr name="colorSubtitle" format="reference|color" />
+    </declare-styleable>
+
+    <declare-styleable name="colorContent">
+        <attr name="colorContent" format="reference|color" />
+    </declare-styleable>
+
+    <declare-styleable name="colorDivider">
+        <attr name="colorDivider" format="reference|color" />
+    </declare-styleable>
+
+    <declare-styleable name="placeholderColors">
+        <attr name="placeholderColors" format="reference" />
+    </declare-styleable>
+
+</resources>

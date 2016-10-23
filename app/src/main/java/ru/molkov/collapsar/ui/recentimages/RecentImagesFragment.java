@@ -3,6 +3,7 @@ package ru.molkov.collapsar.ui.recentimages;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,7 @@ import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.ui.imagedetail.ImageDetailActivity;
 import ru.molkov.collapsar.ui.imagedetail.ImageDetailFragment;
 import ru.molkov.collapsar.utils.DateUtils;
+import ru.molkov.collapsar.utils.ThemeUtils;
 import ru.molkov.collapsar.views.OnItemClickListener;
 import ru.molkov.collapsar.views.OnLoadMoreListener;
 
@@ -65,10 +67,12 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
-        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+            // TODO
+        } else {
+            mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
+            mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorContent_dark));
+        }
 
         mAdapter = new RecentImagesAdapter(getActivity(), recyclerView);
         mAdapter.setOnLoadMoreListener(mOnLoadMoreListener);

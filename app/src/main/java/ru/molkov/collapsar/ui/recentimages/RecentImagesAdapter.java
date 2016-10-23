@@ -1,13 +1,13 @@
 package ru.molkov.collapsar.ui.recentimages;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +20,7 @@ import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.utils.DateUtils;
 import ru.molkov.collapsar.utils.ImageUtils;
+import ru.molkov.collapsar.utils.ThemeUtils;
 import ru.molkov.collapsar.utils.palette.PaletteBitmap;
 import ru.molkov.collapsar.utils.palette.PaletteBitmapTranscoder;
 import ru.molkov.collapsar.utils.palette.PaletteBitmapViewTarget;
@@ -29,59 +30,49 @@ import ru.molkov.collapsar.views.adapters.EndlessRecyclerViewAdapter;
 
 public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
     private List<Apod> mData;
+    private ColorDrawable[] mPlaceholderColors;
     private OnItemClickListener mOnItemClickListener;
     private OnLoadMoreListener mOnLoadMoreListener;
 
     public RecentImagesAdapter(Context context, RecyclerView recyclerView) {
         super(context, recyclerView);
+
         mData = new ArrayList<>();
+        mPlaceholderColors = ThemeUtils.getInstance(getContext()).getPlaceholderColors();
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
-        return new RecentImagesViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.apod_list_content, parent, false), mOnItemClickListener);
+        return new RecentImagesViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tile, parent, false), mOnItemClickListener);
     }
 
     @Override
     public void onBindItemViewHolder(RecyclerView.ViewHolder genericHolder, int position) {
         final RecentImagesViewHolder holder = (RecentImagesViewHolder) genericHolder;
         final Apod apod = mData.get(position);
+        final boolean isPhoto = apod.getMediaType().equalsIgnoreCase("image");
+        final String url = isPhoto ? apod.getUrl() : ImageUtils.getThumbnailUrl(apod.getUrl());
 
-        holder.mFooter.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
-        holder.mImage.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
+        holder.setupDefaultValues(position);
 
-        String url;
-        if (apod.getMediaType().equalsIgnoreCase("video")) {
-            url = ImageUtils.getThumbnailUrl(apod.getUrl());
-            holder.mYoutubeIcon.setVisibility(View.VISIBLE);
-        } else {
-            url = apod.getUrlHd();
-            holder.mYoutubeIcon.setVisibility(View.GONE);
-        }
-
-        holder.mTitle.setText(apod.getTitle());
-        holder.mDate.setText(DateUtils.friendlyFormat(apod.getDate()));
         Glide.with(getContext())
                 .load(url)
                 .asBitmap()
                 .transcode(new PaletteBitmapTranscoder(getContext()), PaletteBitmap.class)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(new PaletteBitmapViewTarget(holder.mImage) {
+                .into(new PaletteBitmapViewTarget(holder.mPhoto) {
                     @Override
                     protected void setResource(PaletteBitmap resource) {
                         super.setResource(resource);
                         Palette palette = resource.getPalette();
-                        if (palette != null) {
-                            Palette.Swatch s = palette.getVibrantSwatch();
-                            if (s == null) {
-                                s = palette.getDarkVibrantSwatch();
-                            }
-                            if (s == null) {
-                                s = palette.getLightVibrantSwatch();
-                            }
-                            if (s != null) {
-                                holder.mFooter.setBackgroundColor(palette.getVibrantColor(s.getRgb()));
-                            }
+                        Palette.Swatch swatch = ImageUtils.getImageColor(palette);
+                        if (swatch != null) {
+                            holder.mContentContainer.setBackgroundColor(palette.getVibrantColor(swatch.getRgb()));
+                        }
+                        holder.mTitle.setText(apod.getTitle());
+                        holder.mSubtitle.setText(DateUtils.friendlyFormat(apod.getDate()));
+                        if (!isPhoto) {
+                            holder.mVideoIcon.setVisibility(View.VISIBLE);
                         }
                     }
                 });
@@ -107,24 +98,27 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
         mOnItemClickListener = onItemClickListener;
     }
 
-    class RecentImagesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class RecentImagesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public View mItemView;
+        public View mContentContainer;
+
+        public ImageView mPhoto;
         public TextView mTitle;
-        public TextView mDate;
-        public ImageView mImage;
-        public ImageView mYoutubeIcon;
-        public RelativeLayout mFooter;
+        public TextView mSubtitle;
+        public ImageView mVideoIcon;
         public OnItemClickListener mOnItemClickListener;
 
         public RecentImagesViewHolder(View itemView, OnItemClickListener onClickListener) {
             super(itemView);
-            mImage = (ImageView) itemView.findViewById(R.id.image);
-            mYoutubeIcon = (ImageView) itemView.findViewById(R.id.youtube_icon);
+            mItemView = itemView;
+            mContentContainer = itemView.findViewById(R.id.item_tile_content_container);
 
-            mTitle = (TextView) itemView.findViewById(R.id.title);
-            mDate = (TextView) itemView.findViewById(R.id.date);
-            mFooter = (RelativeLayout) itemView.findViewById(R.id.footer);
+            mPhoto = (ImageView) itemView.findViewById(R.id.item_tile_photo);
+            mTitle = (TextView) itemView.findViewById(R.id.item_tile_title);
+            mSubtitle = (TextView) itemView.findViewById(R.id.item_tile_subtitle);
+            mVideoIcon = (ImageView) itemView.findViewById(R.id.item_tile_video_icon);
+
             mOnItemClickListener = onClickListener;
-
             itemView.setOnClickListener(this);
         }
 
@@ -133,6 +127,14 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
             if (mOnItemClickListener != null) {
                 mOnItemClickListener.onItemClick(v, getAdapterPosition());
             }
+        }
+
+        public void setupDefaultValues(int position) {
+            mItemView.setBackground(mPlaceholderColors[position % mPlaceholderColors.length]);
+            mContentContainer.setBackground(null);
+            mTitle.setText(null);
+            mSubtitle.setText(null);
+            mVideoIcon.setVisibility(View.GONE);
         }
     }
 }

@@ -14,16 +14,16 @@ public class RecentImagesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recent_images);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_recent_images_toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             toolbar.setTitle(getTitle());
         }
 
-        RecentImagesFragment recentImagesFragment = (RecentImagesFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        RecentImagesFragment recentImagesFragment = (RecentImagesFragment) getSupportFragmentManager().findFragmentById(R.id.activity_recent_images_content_frame);
         if (recentImagesFragment == null) {
             recentImagesFragment = RecentImagesFragment.getInstance();
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), recentImagesFragment, R.id.content_frame);
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), recentImagesFragment, R.id.activity_recent_images_content_frame);
         }
     }
 }
