@@ -3,6 +3,8 @@ package ru.molkov.collapsar.data.source.remote;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
@@ -29,7 +31,10 @@ public abstract class AbstractRemoteDataSource {
     }
 
     private OkHttpClient createOkHttpClient() {
-        return new OkHttpClient();
+        return new OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(1, TimeUnit.MINUTES)
+                .build();
     }
 
     private Converter.Factory createConverterFactory() {
