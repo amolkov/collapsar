@@ -72,11 +72,17 @@ public class ImageDetailPresenter implements ImageDetailContract.Presenter {
 
     private void showApod(Apod apod) {
         mView.setTitle(apod.getTitle());
-
-        String subtitle = apod.getCopyright() != null ?
-                "by ".concat(apod.getCopyright()).concat(", ").concat(DateUtils.friendlyFormat(apod.getDate())) : DateUtils.friendlyFormat(apod.getDate());
-        mView.setSubtitle(subtitle);
-
+        mView.setSubtitle(formatSubtitle(apod));
         mView.setExplanation(apod.getExplanation());
+    }
+
+    private String formatSubtitle(Apod apod) {
+        StringBuilder builder = new StringBuilder();
+        if (apod.getCopyright() != null) {
+            String copyright = apod.getCopyright().replace("\n", " ").replace("\r", " ");
+            builder.append("by ").append(copyright).append(", ");
+        }
+        builder.append(DateUtils.friendlyFormat(apod.getDate()));
+        return builder.toString();
     }
 }
