@@ -2,6 +2,8 @@ package ru.molkov.collapsar.ui.imagedetail;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
@@ -24,7 +26,12 @@ import ru.molkov.collapsar.utils.palette.PaletteBitmapViewTarget;
 import static ru.molkov.collapsar.App.getContext;
 
 public class ImageDetailActivity extends AppCompatActivity {
+    private boolean isMediaTypePhoto = true;
+
     private FloatingActionButton fab;
+    private AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,25 +41,10 @@ public class ImageDetailActivity extends AppCompatActivity {
         String date = getIntent().getStringExtra(ImageDetailFragment.ARGUMENT_APOD_DATE);
         String imageUrl = getIntent().getStringExtra(ImageDetailFragment.ARGUMENT_APOD_IMAGE_URL);
         String mediaType = getIntent().getStringExtra(ImageDetailFragment.ARGUMENT_APOD_MEDIA_TYPE);
+        String url = mediaType.equalsIgnoreCase("image") ? imageUrl : ImageUtils.getThumbnailUrl(imageUrl);
+        isMediaTypePhoto = mediaType.equalsIgnoreCase("image");
 
-        final boolean isPhoto = mediaType.equalsIgnoreCase("image");
-        String url = isPhoto ? imageUrl : ImageUtils.getThumbnailUrl(imageUrl);
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_image_detail_toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
-
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setupLightTheme(isPhoto);
-        } else {
-            setupDarkTheme(isPhoto);
-        }
+        setupUI();
 
         ImageDetailFragment imageDetailFragment = (ImageDetailFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.activity_image_detail_content_frame);
@@ -78,10 +70,50 @@ public class ImageDetailActivity extends AppCompatActivity {
                         Palette.Swatch swatch = ImageUtils.getImageColor(palette);
                         if (swatch != null) {
                             fab.setBackgroundTintList(ColorStateList.valueOf(palette.getVibrantColor(swatch.getRgb())));
-                            setupLightTheme(isPhoto);
+                            setupLightTheme(isMediaTypePhoto);
                         }
                     }
                 });
+    }
+
+    private void setupUI() {
+        final String toolbarTitle = isMediaTypePhoto ? getString(R.string.title_photo) : getString(R.string.title_video);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.activity_image_detail_collapsing_toolbar);
+        appBarLayout = (AppBarLayout) findViewById(R.id.activity_image_detail_app_bar);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle(toolbarTitle);
+                    isShow = true;
+                } else if (isShow) {
+                    collapsingToolbarLayout.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
+
+        toolbar = (Toolbar) findViewById(R.id.activity_image_detail_toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+        if (ThemeUtils.getInstance(this).isLightTheme()) {
+            setupLightTheme(isMediaTypePhoto);
+        } else {
+            setupDarkTheme(isMediaTypePhoto);
+        }
     }
 
     private void setupLightTheme(boolean isPhoto) {
