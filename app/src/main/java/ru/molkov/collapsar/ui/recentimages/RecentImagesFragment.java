@@ -2,6 +2,7 @@ package ru.molkov.collapsar.ui.recentimages;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -150,7 +151,7 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
             args.putString(ImageDetailFragment.ARGUMENT_APOD_MEDIA_TYPE, apod.getMediaType());
             intent.putExtras(args);
 
-            startActivity(intent);
+            ActivityCompat.startActivity(getActivity(), intent, null);
         }
     };
 }

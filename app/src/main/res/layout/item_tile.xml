@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:elevation="@dimen/item_elevation"
+    android:orientation="vertical"
+    android:stateListAnimator="@animator/raise">
 
     <ru.molkov.collapsar.views.widgets.SquareImageView
         android:id="@+id/item_tile_photo"
