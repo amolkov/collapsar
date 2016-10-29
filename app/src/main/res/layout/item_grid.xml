@@ -38,7 +38,7 @@
                     android:layout_width="@dimen/mini_icon_size"
                     android:layout_height="@dimen/mini_icon_size"
                     android:layout_marginEnd="@dimen/nano_margin"
-                    android:src="@drawable/ic_youtube_play" />
+                    android:src="@drawable/ic_video" />
 
                 <TextView
                     android:id="@+id/item_grid_subtitle"
