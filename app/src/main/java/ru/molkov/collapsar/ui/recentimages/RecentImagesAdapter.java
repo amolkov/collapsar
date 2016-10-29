@@ -43,7 +43,7 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
 
     @Override
     public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
-        return new RecentImagesViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tile, parent, false), mOnItemClickListener);
+        return new RecentImagesViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid, parent, false), mOnItemClickListener);
     }
 
     @Override
@@ -111,12 +111,12 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
         public RecentImagesViewHolder(View itemView, OnItemClickListener onClickListener) {
             super(itemView);
             mItemView = itemView;
-            mContentContainer = itemView.findViewById(R.id.item_tile_content_container);
+            mContentContainer = itemView.findViewById(R.id.item_grid_content_container);
 
-            mPhoto = (ImageView) itemView.findViewById(R.id.item_tile_photo);
-            mTitle = (TextView) itemView.findViewById(R.id.item_tile_title);
-            mSubtitle = (TextView) itemView.findViewById(R.id.item_tile_subtitle);
-            mVideoIcon = (ImageView) itemView.findViewById(R.id.item_tile_video_icon);
+            mPhoto = (ImageView) itemView.findViewById(R.id.item_grid_photo);
+            mTitle = (TextView) itemView.findViewById(R.id.item_grid_title);
+            mSubtitle = (TextView) itemView.findViewById(R.id.item_grid_subtitle);
+            mVideoIcon = (ImageView) itemView.findViewById(R.id.item_grid_video_icon);
 
             mOnItemClickListener = onClickListener;
             itemView.setOnClickListener(this);

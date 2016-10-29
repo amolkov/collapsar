@@ -7,13 +7,13 @@
     android:stateListAnimator="@animator/raise">
 
     <ru.molkov.collapsar.views.widgets.SquareImageView
-        android:id="@+id/item_tile_photo"
+        android:id="@+id/item_grid_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop" />
 
     <RelativeLayout
-        android:id="@+id/item_tile_content_container"
+        android:id="@+id/item_grid_content_container"
         android:layout_width="match_parent"
         android:layout_height="74dp"
         android:padding="@dimen/normal_margin">
@@ -24,7 +24,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/item_tile_title"
+                android:id="@+id/item_grid_title"
                 style="@style/TextAppearance.RecentImages.TileTitle"
                 android:gravity="center_vertical" />
 
@@ -34,14 +34,14 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/item_tile_video_icon"
+                    android:id="@+id/item_grid_video_icon"
                     android:layout_width="@dimen/mini_icon_size"
                     android:layout_height="@dimen/mini_icon_size"
                     android:layout_marginEnd="@dimen/nano_margin"
                     android:src="@drawable/ic_youtube_play" />
 
                 <TextView
-                    android:id="@+id/item_tile_subtitle"
+                    android:id="@+id/item_grid_subtitle"
                     style="@style/TextAppearance.RecentImages.TileSubtitle"
                     android:layout_gravity="center" />
 
