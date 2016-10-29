@@ -40,9 +40,8 @@ public class ImageDetailActivity extends AppCompatActivity {
 
         String date = getIntent().getStringExtra(ImageDetailFragment.ARGUMENT_APOD_DATE);
         String imageUrl = getIntent().getStringExtra(ImageDetailFragment.ARGUMENT_APOD_IMAGE_URL);
-        String imageUrlHd = getIntent().getStringExtra(ImageDetailFragment.ARGUMENT_APOD_IMAGE_URL_HD);
         String mediaType = getIntent().getStringExtra(ImageDetailFragment.ARGUMENT_APOD_MEDIA_TYPE);
-        String url = mediaType.equalsIgnoreCase("image") ? imageUrlHd : ImageUtils.getThumbnailUrl(imageUrl);
+        String url = mediaType.equalsIgnoreCase("image") ? imageUrl : ImageUtils.getThumbnailUrl(imageUrl);
         isMediaTypePhoto = mediaType.equalsIgnoreCase("image");
 
         setupUI();
