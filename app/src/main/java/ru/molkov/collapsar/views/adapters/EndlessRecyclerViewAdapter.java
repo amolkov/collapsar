@@ -112,7 +112,7 @@ public abstract class EndlessRecyclerViewAdapter<T> extends RecyclerView.Adapter
     private void onBindProgressView(RecyclerView.ViewHolder genericHolder, int position) {
         ProgressViewHolder holder = (ProgressViewHolder) genericHolder;
         holder.mProgressBar.setIndeterminate(true);
-        holder.mProgressBar.getIndeterminateDrawable().setColorFilter(ThemeUtils.getInstance(mContext).getThemeColor(R.attr.colorAccent), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.mProgressBar.getIndeterminateDrawable().setColorFilter(ThemeUtils.getThemeColor(mContext, R.attr.colorAccent), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     private class ProgressViewHolder extends RecyclerView.ViewHolder {

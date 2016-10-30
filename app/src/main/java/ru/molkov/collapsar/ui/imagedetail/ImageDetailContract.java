@@ -7,11 +7,15 @@ public interface ImageDetailContract {
 
     interface View extends BaseView<Presenter> {
 
+        void setPhoto(String url);
+
         void setTitle(String title);
 
         void setSubtitle(String subtitle);
 
         void setExplanation(String explanation);
+
+        void setCopyright(String copyright);
 
         void showError(String error);
     }

@@ -38,7 +38,7 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
         super(context, recyclerView);
 
         mData = new ArrayList<>();
-        mPlaceholderColors = ThemeUtils.getInstance(getContext()).getPlaceholderColors();
+        mPlaceholderColors = ThemeUtils.getPlaceholderColors(getContext());
     }
 
     @Override
@@ -52,7 +52,6 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
         final Apod apod = mData.get(position);
         final boolean isPhoto = apod.getMediaType().equalsIgnoreCase("image");
         final String url = isPhoto ? apod.getUrl() : ImageUtils.getThumbnailUrl(apod.getUrl());
-
         holder.setupDefaultValues(position);
 
         Glide.with(getContext())

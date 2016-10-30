@@ -1,6 +1,9 @@
 <resources>
 
-    <style name="Collapsar" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="Collapsar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 
     <style name="Collapsar.Dark" parent="Collapsar">
         <item name="colorPrimary">@color/colorPrimary_dark</item>
@@ -73,7 +76,7 @@
         <item name="android:letterSpacing">0.01</item>
     </style>
 
-    <style name="TextAppearance.Detail.TitleExplanation" parent="@android:style/TextAppearance.Material.Subhead">
+    <style name="TextAppearance.Detail.TitleContent" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/normal_text_size</item>
@@ -83,7 +86,7 @@
         <item name="android:letterSpacing">0.01</item>
     </style>
 
-    <style name="TextAppearance.Detail.Explanation" parent="@android:style/TextAppearance.Material.Subhead">
+    <style name="TextAppearance.Detail.Content" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/normal_text_size</item>

@@ -10,7 +10,8 @@
         android:id="@+id/item_grid_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:transitionName="@string/transition_photo" />
 
     <RelativeLayout
         android:id="@+id/item_grid_content_container"

@@ -3,8 +3,10 @@ package ru.molkov.collapsar.ui.recentimages;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +21,6 @@ import ru.molkov.collapsar.Injection;
 import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.ui.imagedetail.ImageDetailActivity;
-import ru.molkov.collapsar.ui.imagedetail.ImageDetailFragment;
 import ru.molkov.collapsar.utils.DateUtils;
 import ru.molkov.collapsar.utils.ThemeUtils;
 import ru.molkov.collapsar.views.OnItemClickListener;
@@ -68,7 +69,7 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
-        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+        if (ThemeUtils.isLightTheme(getActivity())) {
             // TODO
         } else {
             mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
@@ -146,12 +147,16 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
 
             Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
             Bundle args = new Bundle();
-            args.putString(ImageDetailFragment.ARGUMENT_APOD_DATE, DateUtils.toString(apod.getDate()));
-            args.putString(ImageDetailFragment.ARGUMENT_APOD_IMAGE_URL, apod.getUrl());
-            args.putString(ImageDetailFragment.ARGUMENT_APOD_MEDIA_TYPE, apod.getMediaType());
+            args.putString(ImageDetailActivity.ARGUMENT_APOD_DATE, DateUtils.toString(apod.getDate()));
+            args.putString(ImageDetailActivity.ARGUMENT_APOD_MEDIA_TYPE, apod.getMediaType());
             intent.putExtras(args);
 
-            ActivityCompat.startActivity(getActivity(), intent, null);
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    getActivity(),
+                    Pair.create(v.findViewById(R.id.item_grid_photo), getString(R.string.transition_photo)),
+                    Pair.create(v, getString(R.string.transition_background)));
+
+            ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
         }
     };
 }

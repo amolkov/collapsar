@@ -6,6 +6,7 @@ import ru.molkov.collapsar.data.IRepository;
 import ru.molkov.collapsar.data.core.error.RetrofitException;
 import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.utils.DateUtils;
+import ru.molkov.collapsar.utils.ImageUtils;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -71,18 +72,19 @@ public class ImageDetailPresenter implements ImageDetailContract.Presenter {
     }
 
     private void showApod(Apod apod) {
+        mView.setPhoto(apod.getMediaType().equalsIgnoreCase("image") ? apod.getUrl() : ImageUtils.getThumbnailUrl(apod.getUrl()));
         mView.setTitle(apod.getTitle());
-        mView.setSubtitle(formatSubtitle(apod));
+        mView.setSubtitle(DateUtils.friendlyFormat(apod.getDate()));
         mView.setExplanation(apod.getExplanation());
+        mView.setCopyright(formatCopyright(apod));
     }
 
-    private String formatSubtitle(Apod apod) {
+    private String formatCopyright(Apod apod) {
         StringBuilder builder = new StringBuilder();
         if (apod.getCopyright() != null) {
             String copyright = apod.getCopyright().replace("\n", " ").replace("\r", " ");
-            builder.append("by ").append(copyright).append(", ");
+            builder.append("by ").append(copyright);
         }
-        builder.append(DateUtils.friendlyFormat(apod.getDate()));
         return builder.toString();
     }
 }

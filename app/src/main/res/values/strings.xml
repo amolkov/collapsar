@@ -6,7 +6,8 @@
 
     <string name="title_photo">Photo</string>
     <string name="title_video">Video</string>
-    <string name="title_explanation">explanation</string>
+    <string name="title_explanation">Explanation</string>
+    <string name="title_copyright">Copyright</string>
 
     <string name="action_download">Download</string>
     <string name="action_share">Share</string>
@@ -19,4 +20,7 @@
     <string name="error_server">Internal server error, try again later</string>
     <string name="error_network">It seems you have no network connection</string>
     <string name="error_unexpected">Uh oh, something went wrong</string>
+
+    <string name="transition_photo">transition_photo</string>
+    <string name="transition_background">transition_background</string>
 </resources>

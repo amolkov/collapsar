@@ -12,34 +12,24 @@ import android.util.TypedValue;
 import ru.molkov.collapsar.R;
 
 public class ThemeUtils {
-    private static ThemeUtils INSTANCE = null;
-    private final Context mContext;
 
-    public static ThemeUtils getInstance(Context context) {
-        if (INSTANCE == null) {
-            INSTANCE = new ThemeUtils(context);
-        }
-        return INSTANCE;
-    }
-
-    private ThemeUtils(Context context) {
-        mContext = context;
+    private ThemeUtils() {
     }
 
     @ColorInt
-    public int getThemeColor(int attributeColor) {
+    public static int getThemeColor(Context context, int attributeColor) {
         TypedValue value = new TypedValue();
-        mContext.getTheme().resolveAttribute(attributeColor, value, true);
+        context.getTheme().resolveAttribute(attributeColor, value, true);
         return value.data;
     }
 
-    public ColorDrawable[] getPlaceholderColors() {
+    public static ColorDrawable[] getPlaceholderColors(Context context) {
         ColorDrawable[] result;
 
-        final TypedArray typedArray = mContext.obtainStyledAttributes(R.styleable.placeholderColors);
+        final TypedArray typedArray = context.obtainStyledAttributes(R.styleable.placeholderColors);
         final int colorArrayId = typedArray.getResourceId(R.styleable.placeholderColors_placeholderColors, 0);
         if (colorArrayId != 0) {
-            int[] placeholderColors = mContext.getResources().getIntArray(colorArrayId);
+            int[] placeholderColors = context.getResources().getIntArray(colorArrayId);
             result = new ColorDrawable[placeholderColors.length];
             for (int i = 0; i < placeholderColors.length; i++) {
                 result[i] = new ColorDrawable(placeholderColors[i]);
@@ -51,8 +41,8 @@ public class ThemeUtils {
         return result;
     }
 
-    public boolean isLightTheme() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        return sharedPreferences.getBoolean(mContext.getString(R.string.key_light_theme), false);
+    public static boolean isLightTheme(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean(context.getString(R.string.key_light_theme), false);
     }
 }
