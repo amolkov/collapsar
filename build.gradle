@@ -28,7 +28,7 @@ ext {
     buildToolsVersion = '24.0.1'
 
     // App's dependencies
-    supportLibraryVersion = '23.1.0'
+    supportLibraryVersion = '25.0.0'
     retrofitVersion = '2.1.0'
     sqlBriteVersion = '0.7.0'
     okHttpVersion = '3.4.1'
