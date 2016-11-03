@@ -8,6 +8,13 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.imagedetail.ImageDetailActivity">
 
+    <View
+        android:id="@+id/activity_image_detail_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorBackground"
+        android:transitionName="@string/transition_background" />
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/activity_image_detail_app_bar"
         android:layout_width="match_parent"

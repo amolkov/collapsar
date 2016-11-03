@@ -121,8 +121,8 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         View actionContainer = findViewById(R.id.container_image_detail_action_container);
         View contentContainer = findViewById(R.id.container_image_detail_content_container);
 
-        AnimUtils.initShow(titleContainer, 200);
-        AnimUtils.initShow(actionContainer, 300);
+        AnimUtils.initShow(titleContainer, 300);
+        AnimUtils.initShow(actionContainer, 350);
         AnimUtils.initShow(contentContainer, 400);
         AnimUtils.initFabShow(fab, 400);
     }

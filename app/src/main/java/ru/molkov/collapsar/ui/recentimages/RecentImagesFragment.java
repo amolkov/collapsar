@@ -154,7 +154,7 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                     getActivity(),
                     Pair.create(v.findViewById(R.id.item_grid_photo), getString(R.string.transition_photo)),
-                    Pair.create(v, getString(R.string.transition_background)));
+                    Pair.create(v.findViewById(R.id.item_grid_photo), getString(R.string.transition_background)));
 
             ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
         }
