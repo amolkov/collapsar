@@ -1,6 +1,7 @@
 package ru.molkov.collapsar.views.adapters;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -91,7 +92,12 @@ public abstract class EndlessRecyclerViewAdapter<T> extends RecyclerView.Adapter
             getItems().remove(null);
         }
         mLoading = loading;
-        notifyDataSetChanged();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
     }
 
     public void addItems(List<T> items) {
