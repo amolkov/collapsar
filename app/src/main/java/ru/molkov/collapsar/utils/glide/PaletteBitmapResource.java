@@ -1,4 +1,4 @@
-package ru.molkov.collapsar.utils.palette;
+package ru.molkov.collapsar.utils.glide;
 
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;

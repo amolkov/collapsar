@@ -2,6 +2,7 @@ package ru.molkov.collapsar.ui.recentimages;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,12 +19,13 @@ import java.util.List;
 
 import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.data.model.Apod;
+import ru.molkov.collapsar.utils.AnimUtils;
 import ru.molkov.collapsar.utils.DateUtils;
 import ru.molkov.collapsar.utils.ImageUtils;
 import ru.molkov.collapsar.utils.ThemeUtils;
-import ru.molkov.collapsar.utils.palette.PaletteBitmap;
-import ru.molkov.collapsar.utils.palette.PaletteBitmapTranscoder;
-import ru.molkov.collapsar.utils.palette.PaletteBitmapViewTarget;
+import ru.molkov.collapsar.utils.glide.PaletteBitmap;
+import ru.molkov.collapsar.utils.glide.PaletteBitmapTranscoder;
+import ru.molkov.collapsar.utils.glide.PaletteBitmapViewTarget;
 import ru.molkov.collapsar.views.OnItemClickListener;
 import ru.molkov.collapsar.views.OnLoadMoreListener;
 import ru.molkov.collapsar.views.adapters.EndlessRecyclerViewAdapter;
@@ -47,7 +49,7 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
     }
 
     @Override
-    public void onBindItemViewHolder(RecyclerView.ViewHolder genericHolder, int position) {
+    public void onBindItemViewHolder(RecyclerView.ViewHolder genericHolder, final int position) {
         final RecentImagesViewHolder holder = (RecentImagesViewHolder) genericHolder;
         final Apod apod = mData.get(position);
         final boolean isPhoto = apod.getMediaType().equalsIgnoreCase("image");
@@ -65,9 +67,30 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
                         super.setResource(resource);
                         Palette palette = resource.getPalette();
                         Palette.Swatch swatch = ImageUtils.getImageColor(palette);
-                        if (swatch != null) {
-                            holder.mContentContainer.setBackgroundColor(palette.getVibrantColor(swatch.getRgb()));
+
+                        holder.mTitle.setText(apod.getTitle());
+                        holder.mSubtitle.setText(DateUtils.friendlyFormat(apod.getDate()));
+                        if (!isPhoto) {
+                            holder.mVideoIcon.setVisibility(View.VISIBLE);
                         }
+
+                        if (!apod.hasFadedIn) {
+                            AnimUtils.saturationImage(holder.mPhoto);
+                            if (swatch != null) {
+                                AnimUtils.saturationBackground(holder.mContentContainer, palette.getVibrantColor(swatch.getRgb()));
+                            }
+                            apod.hasFadedIn = true;
+                        } else {
+                            if (swatch != null) {
+                                holder.mContentContainer.setBackgroundColor(palette.getVibrantColor(swatch.getRgb()));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+
                         holder.mTitle.setText(apod.getTitle());
                         holder.mSubtitle.setText(DateUtils.friendlyFormat(apod.getDate()));
                         if (!isPhoto) {
@@ -75,6 +98,14 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
                         }
                     }
                 });
+    }
+
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder instanceof RecentImagesViewHolder) {
+            Glide.clear(((RecentImagesViewHolder) holder).mPhoto);
+        }
     }
 
     @Override

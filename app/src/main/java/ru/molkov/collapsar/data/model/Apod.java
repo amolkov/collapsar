@@ -28,6 +28,8 @@ public class Apod implements Serializable {
     @SerializedName("hdurl")
     private final String mUrlHd;
 
+    public boolean hasFadedIn = false;
+
     public Apod(String copyright, Date date, String explanation, String mediaType, String title, String url, String urlHd) {
         mCopyright = copyright;
         mDate = date;

@@ -1,4 +1,4 @@
-package ru.molkov.collapsar.utils.palette;
+package ru.molkov.collapsar.utils.glide;
 
 import android.widget.ImageView;
 

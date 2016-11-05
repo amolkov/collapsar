@@ -38,10 +38,12 @@ public class ApodRepository implements IRepository<Apod> {
 
     @Override
     public Observable<Apod> get(Date date) {
+        /*
         final Apod cachedApod = getFromCache(date);
         if (cachedApod != null) {
             return Observable.just(cachedApod);
         }
+        */
 
         Observable<Apod> localApod = mLocalDataSource.get(date).doOnNext(new Action1<Apod>() {
             @Override

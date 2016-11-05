@@ -25,9 +25,9 @@ import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.utils.AnimUtils;
 import ru.molkov.collapsar.utils.ImageUtils;
 import ru.molkov.collapsar.utils.ThemeUtils;
-import ru.molkov.collapsar.utils.palette.PaletteBitmap;
-import ru.molkov.collapsar.utils.palette.PaletteBitmapTranscoder;
-import ru.molkov.collapsar.utils.palette.PaletteBitmapViewTarget;
+import ru.molkov.collapsar.utils.glide.PaletteBitmap;
+import ru.molkov.collapsar.utils.glide.PaletteBitmapTranscoder;
+import ru.molkov.collapsar.utils.glide.PaletteBitmapViewTarget;
 
 public class ImageDetailActivity extends AppCompatActivity implements ImageDetailContract.View {
     public static final String ARGUMENT_APOD_DATE = "APOD_DATE";
@@ -104,15 +104,19 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         if (ThemeUtils.isLightTheme(this)) {
             ((ImageButton) findViewById(R.id.container_image_detail_download_btn)).setImageResource(R.drawable.ic_download_light);
             ((ImageButton) findViewById(R.id.container_image_detail_share_btn)).setImageResource(R.drawable.ic_send_light);
+            if (mediaType.equalsIgnoreCase("image")) {
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_dark));
+            } else {
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_dark));
+            }
         } else {
             ((ImageButton) findViewById(R.id.container_image_detail_download_btn)).setImageResource(R.drawable.ic_download_dark);
             ((ImageButton) findViewById(R.id.container_image_detail_share_btn)).setImageResource(R.drawable.ic_send_dark);
-        }
-
-        if (mediaType.equalsIgnoreCase("image")) {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_dark));
-        } else {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_dark));
+            if (mediaType.equalsIgnoreCase("image")) {
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_light));
+            } else {
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_light));
+            }
         }
     }
 
@@ -121,9 +125,9 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         View actionContainer = findViewById(R.id.container_image_detail_action_container);
         View contentContainer = findViewById(R.id.container_image_detail_content_container);
 
-        AnimUtils.initShow(titleContainer, 300);
-        AnimUtils.initShow(actionContainer, 350);
-        AnimUtils.initShow(contentContainer, 400);
+        AnimUtils.translationView(titleContainer, 300);
+        AnimUtils.translationView(actionContainer, 350);
+        AnimUtils.translationView(contentContainer, 400);
         AnimUtils.initFabShow(fab, 400);
     }
 
@@ -147,6 +151,7 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
                         Palette palette = resource.getPalette();
                         Palette.Swatch swatch = ImageUtils.getImageColor(palette);
                         if (swatch != null) {
+                            setLightFab();
                             fab.setBackgroundTintList(ColorStateList.valueOf(palette.getVibrantColor(swatch.getRgb())));
                         }
                     }
@@ -186,7 +191,6 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
                 viewLabel.setVisibility(View.GONE);
                 view.setVisibility(View.GONE);
             }
-
             view.setText(copyright);
         }
     }
@@ -194,5 +198,13 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
     @Override
     public void showError(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+
+    private void setLightFab() {
+        if (mediaType.equalsIgnoreCase("image")) {
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_dark));
+        } else {
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_dark));
+        }
     }
 }
