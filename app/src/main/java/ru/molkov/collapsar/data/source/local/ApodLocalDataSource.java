@@ -38,19 +38,16 @@ public class ApodLocalDataSource implements ILocalDataSource<Apod> {
         ApodDbHelper dbHelper = new ApodDbHelper(context);
         SqlBrite sqlBrite = SqlBrite.create();
         mDatabaseHelper = sqlBrite.wrapDatabaseHelper(dbHelper, Schedulers.io());
-        mMapperFunction = new Func1<Cursor, Apod>() {
-            @Override
-            public Apod call(Cursor c) {
-                String copyright = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_COPYRIGHT));
-                String date = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_DATE));
-                Date parsedDate = DateUtils.toDate(date);
-                String explanation = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_EXPLANATION));
-                String mediaType = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_MEDIA_TYPE));
-                String title = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_TITLE));
-                String url = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_URL));
-                String urlHd = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_URL_HD));
-                return new Apod(copyright, parsedDate, explanation, mediaType, title, url, urlHd);
-            }
+        mMapperFunction = c -> {
+            String copyright = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_COPYRIGHT));
+            String date = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_DATE));
+            Date parsedDate = DateUtils.toDate(date);
+            String explanation = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_EXPLANATION));
+            String mediaType = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_MEDIA_TYPE));
+            String title = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_TITLE));
+            String url = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_URL));
+            String urlHd = c.getString(c.getColumnIndexOrThrow(ApodEntry.COLUMN_NAME_URL_HD));
+            return new Apod(copyright, parsedDate, explanation, mediaType, title, url, urlHd);
         };
     }
 

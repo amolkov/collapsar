@@ -1,6 +1,5 @@
 package ru.molkov.collapsar.data;
 
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,9 +11,6 @@ import ru.molkov.collapsar.data.source.local.ILocalDataSource;
 import ru.molkov.collapsar.data.source.remote.IRemoteDataSource;
 import ru.molkov.collapsar.utils.DateUtils;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.functions.Func2;
 
 public class ApodRepository implements IRepository<Apod> {
     private static ApodRepository INSTANCE = null;
@@ -45,24 +41,9 @@ public class ApodRepository implements IRepository<Apod> {
         }
         */
 
-        Observable<Apod> localApod = mLocalDataSource.get(date).doOnNext(new Action1<Apod>() {
-            @Override
-            public void call(Apod apod) {
-                ApodRepository.this.putToCache(apod);
-            }
-        });
-        Observable<Apod> remoteApod = mRemoteDataSource.get(date).doOnNext(new Action1<Apod>() {
-            @Override
-            public void call(Apod apod) {
-                ApodRepository.this.create(apod);
-            }
-        });
-        return Observable.concat(localApod.first(), remoteApod).filter(new Func1<Apod, Boolean>() {
-            @Override
-            public Boolean call(Apod apod) {
-                return apod != null;
-            }
-        }).first();
+        Observable<Apod> localApod = mLocalDataSource.get(date).doOnNext(apod -> putToCache(apod));
+        Observable<Apod> remoteApod = mRemoteDataSource.get(date).doOnNext(apod -> create(apod));
+        return Observable.concat(localApod.first(), remoteApod).filter(apod -> apod != null).first();
     }
 
 
@@ -70,22 +51,12 @@ public class ApodRepository implements IRepository<Apod> {
     public Observable<List<Apod>> getList(List<Date> dates) {
         return Observable
                 .merge(getObservables(dates))
-                .toSortedList(new Func2<Apod, Apod, Integer>() {
-                    @Override
-                    public Integer call(Apod first, Apod second) {
-                        return first.getDate().before(second.getDate()) ? 1 : -1;
-                    }
-                });
+                .toSortedList((first, second) -> first.getDate().before(second.getDate()) ? 1 : -1);
     }
 
     @Override
     public Observable<Apod> create(Apod model) {
-        return mLocalDataSource.create(model).doOnNext(new Action1<Apod>() {
-            @Override
-            public void call(Apod apod) {
-                ApodRepository.this.putToCache(apod);
-            }
-        });
+        return mLocalDataSource.create(model).doOnNext(apod -> putToCache(apod));
     }
 
     @Override

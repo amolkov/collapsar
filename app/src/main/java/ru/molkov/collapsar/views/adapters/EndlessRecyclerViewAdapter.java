@@ -78,7 +78,10 @@ public abstract class EndlessRecyclerViewAdapter<T> extends RecyclerView.Adapter
 
     @Override
     public int getItemViewType(int position) {
-        return getItems().get(position) != null ? VIEW_TYPE_ITEM : VIEW_TYPE_PROGRESS;
+        if (position < getItemCount() && getItems().get(position) != null) {
+            return VIEW_TYPE_ITEM;
+        }
+        return VIEW_TYPE_PROGRESS;
     }
 
     public Context getContext() {

@@ -104,7 +104,8 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
         if (holder instanceof RecentImagesViewHolder) {
-            Glide.clear(((RecentImagesViewHolder) holder).mPhoto);
+            RecentImagesViewHolder recentImagesViewHolder = (RecentImagesViewHolder) holder;
+            Glide.clear(recentImagesViewHolder.mPhoto);
         }
     }
 
