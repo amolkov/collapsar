@@ -43,7 +43,7 @@ public class ApodRepository implements IRepository<Apod> {
 
         Observable<Apod> localApod = mLocalDataSource.get(date).doOnNext(apod -> putToCache(apod));
         Observable<Apod> remoteApod = mRemoteDataSource.get(date).doOnNext(apod -> create(apod));
-        return Observable.concat(localApod.first(), remoteApod).filter(apod -> apod != null).first();
+        return Observable.concat(localApod.first(), remoteApod).takeFirst(apod -> apod != null);
     }
 
 
@@ -56,7 +56,10 @@ public class ApodRepository implements IRepository<Apod> {
 
     @Override
     public Observable<Apod> create(Apod model) {
-        return mLocalDataSource.create(model).doOnNext(apod -> putToCache(apod));
+        if (model != null) {
+            return mLocalDataSource.create(model).doOnNext(apod -> putToCache(apod));
+        }
+        return Observable.empty();
     }
 
     @Override
