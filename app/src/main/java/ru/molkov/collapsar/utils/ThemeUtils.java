@@ -13,9 +13,6 @@ import ru.molkov.collapsar.R;
 
 public class ThemeUtils {
 
-    private ThemeUtils() {
-    }
-
     @ColorInt
     public static int getThemeColor(Context context, int attributeColor) {
         TypedValue value = new TypedValue();

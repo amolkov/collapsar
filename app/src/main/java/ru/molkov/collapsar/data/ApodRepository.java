@@ -10,6 +10,7 @@ import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.data.source.local.ILocalDataSource;
 import ru.molkov.collapsar.data.source.remote.IRemoteDataSource;
 import ru.molkov.collapsar.utils.DateUtils;
+import ru.molkov.collapsar.utils.ImageUtils;
 import rx.Observable;
 
 public class ApodRepository implements IRepository<Apod> {
@@ -51,6 +52,7 @@ public class ApodRepository implements IRepository<Apod> {
     public Observable<List<Apod>> getList(List<Date> dates) {
         return Observable
                 .merge(getObservables(dates))
+                .filter(apod -> isSupported(apod))
                 .toSortedList((first, second) -> first.getDate().before(second.getDate()) ? 1 : -1);
     }
 
@@ -83,6 +85,13 @@ public class ApodRepository implements IRepository<Apod> {
         if (apod != null) {
             mCachedData.put(DateUtils.toString(apod.getDate()), apod);
         }
+    }
+
+    private boolean isSupported(Apod apod) {
+        if (apod.getMediaType().equalsIgnoreCase("image")) {
+            return true;
+        }
+        return ImageUtils.isSupportedVideo(apod.getUrl());
     }
 
     private List<Observable<Apod>> getObservables(List<Date> dates) {
