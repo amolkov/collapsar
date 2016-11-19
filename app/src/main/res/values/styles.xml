@@ -41,12 +41,18 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <!-- detail activity -->
+    <!-- image detail activity -->
     <style name="Collapsar.Detail.Dark" parent="Collapsar.Dark">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- image preview activity -->
+    <style name="Collapsar.Preview.Dark" parent="Collapsar.Dark">
+        <item name="android:statusBarColor">@color/colorPrimary_dark</item>
+        <item name="android:navigationBarColor">@color/colorPrimary_dark</item>
     </style>
 
     <style name="TextAppearance.Detail.Title" parent="@android:style/TextAppearance.Material.Title">

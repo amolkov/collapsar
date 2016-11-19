@@ -149,6 +149,7 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
             Bundle args = new Bundle();
             args.putString(ImageDetailActivity.ARGUMENT_APOD_DATE, DateUtils.toString(apod.getDate()));
             args.putString(ImageDetailActivity.ARGUMENT_APOD_MEDIA_TYPE, apod.getMediaType());
+            args.putString(ImageDetailActivity.ARGUMENT_APOD_URL, apod.getUrl());
             intent.putExtras(args);
 
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(

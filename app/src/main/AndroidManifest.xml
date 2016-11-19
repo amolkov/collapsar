@@ -34,6 +34,11 @@
 
         </activity>
 
+        <activity
+            android:name=".ui.imagepreview.ImagePreviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Collapsar.Preview.Dark" />
+
     </application>
 
 </manifest>

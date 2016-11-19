@@ -1,6 +1,8 @@
 package ru.molkov.collapsar.ui.imagedetail;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -22,6 +24,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import ru.molkov.collapsar.Injection;
 import ru.molkov.collapsar.R;
+import ru.molkov.collapsar.ui.imagepreview.ImagePreviewActivity;
 import ru.molkov.collapsar.utils.AnimUtils;
 import ru.molkov.collapsar.utils.ImageUtils;
 import ru.molkov.collapsar.utils.ThemeUtils;
@@ -32,9 +35,11 @@ import ru.molkov.collapsar.utils.glide.PaletteBitmapViewTarget;
 public class ImageDetailActivity extends AppCompatActivity implements ImageDetailContract.View {
     public static final String ARGUMENT_APOD_DATE = "APOD_DATE";
     public static final String ARGUMENT_APOD_MEDIA_TYPE = "APOD_MEDIA_TYPE";
+    public static final String ARGUMENT_APOD_URL = "APOD_URL";
 
-    private String date;
-    private String mediaType;
+    private String mDate;
+    private String mMediaType;
+    private String mUrl;
 
     private ImageDetailContract.Presenter mPresenter;
     private FloatingActionButton fab;
@@ -44,14 +49,15 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
 
-        date = getIntent().getStringExtra(ImageDetailActivity.ARGUMENT_APOD_DATE);
-        mediaType = getIntent().getStringExtra(ImageDetailActivity.ARGUMENT_APOD_MEDIA_TYPE);
+        mDate = getIntent().getStringExtra(ImageDetailActivity.ARGUMENT_APOD_DATE);
+        mMediaType = getIntent().getStringExtra(ImageDetailActivity.ARGUMENT_APOD_MEDIA_TYPE);
+        mUrl = getIntent().getStringExtra(ImageDetailActivity.ARGUMENT_APOD_URL);
 
         initView();
         initUI();
         initAnimation();
 
-        mPresenter = new ImageDetailPresenter(date, Injection.provideApodRepository(getApplicationContext()), this);
+        mPresenter = new ImageDetailPresenter(mDate, Injection.provideApodRepository(getApplicationContext()), this);
         mPresenter.subscribe();
     }
 
@@ -68,7 +74,7 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
     }
 
     private void initView() {
-        final String toolbarTitle = mediaType.equalsIgnoreCase("image") ? getString(R.string.title_photo) : getString(R.string.title_video);
+        final String toolbarTitle = mMediaType.equalsIgnoreCase("image") ? getString(R.string.title_photo) : getString(R.string.title_video);
         final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.activity_image_detail_collapsing_toolbar);
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.activity_image_detail_app_bar);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -98,13 +104,25 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         ab.setDisplayShowTitleEnabled(false);
 
         fab = (FloatingActionButton) findViewById(R.id.activity_image_detail_fab);
+        fab.setOnClickListener(view -> {
+            if (mMediaType.equalsIgnoreCase("image")) {
+                Intent imageIntent = new Intent(view.getContext(), ImagePreviewActivity.class);
+                Bundle args = new Bundle();
+                args.putString(ImagePreviewActivity.ARGUMENT_APOD_DATE, mDate);
+                imageIntent.putExtras(args);
+                startActivity(imageIntent);
+            } else {
+                Intent videoIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUrl));
+                startActivity(videoIntent);
+            }
+        });
     }
 
     private void initUI() {
         if (ThemeUtils.isLightTheme(this)) {
             ((ImageButton) findViewById(R.id.container_image_detail_download_btn)).setImageResource(R.drawable.ic_download_light);
             ((ImageButton) findViewById(R.id.container_image_detail_share_btn)).setImageResource(R.drawable.ic_send_light);
-            if (mediaType.equalsIgnoreCase("image")) {
+            if (mMediaType.equalsIgnoreCase("image")) {
                 fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_dark));
             } else {
                 fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_dark));
@@ -112,7 +130,7 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         } else {
             ((ImageButton) findViewById(R.id.container_image_detail_download_btn)).setImageResource(R.drawable.ic_download_dark);
             ((ImageButton) findViewById(R.id.container_image_detail_share_btn)).setImageResource(R.drawable.ic_send_dark);
-            if (mediaType.equalsIgnoreCase("image")) {
+            if (mMediaType.equalsIgnoreCase("image")) {
                 fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_light));
             } else {
                 fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_light));
@@ -201,7 +219,7 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
     }
 
     private void setLightFab() {
-        if (mediaType.equalsIgnoreCase("image")) {
+        if (mMediaType.equalsIgnoreCase("image")) {
             fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_dark));
         } else {
             fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_dark));
