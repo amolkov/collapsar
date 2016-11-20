@@ -2,7 +2,6 @@ package ru.molkov.collapsar.ui.recentimages;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.utils.ActivityUtils;
@@ -13,12 +12,6 @@ public class RecentImagesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recent_images);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_recent_images_toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            toolbar.setTitle(getTitle());
-        }
 
         RecentImagesFragment recentImagesFragment = (RecentImagesFragment) getSupportFragmentManager().findFragmentById(R.id.activity_recent_images_content_frame);
         if (recentImagesFragment == null) {

@@ -26,7 +26,6 @@ public class ImageDetailPresenter implements ImageDetailContract.Presenter {
         mView = view;
         mView.setPresenter(this);
         mSubscriptions = new CompositeSubscription();
-
         mApodDate = apodDate;
     }
 

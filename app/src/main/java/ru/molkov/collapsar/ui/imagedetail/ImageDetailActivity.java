@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +21,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ru.molkov.collapsar.Injection;
 import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.ui.imagepreview.ImagePreviewActivity;
@@ -37,27 +39,55 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
     public static final String ARGUMENT_APOD_MEDIA_TYPE = "APOD_MEDIA_TYPE";
     public static final String ARGUMENT_APOD_URL = "APOD_URL";
 
+    private ImageDetailContract.Presenter mPresenter;
     private String mDate;
     private String mMediaType;
     private String mUrl;
 
-    private ImageDetailContract.Presenter mPresenter;
-    private FloatingActionButton fab;
+    @BindView(R.id.activity_image_detail_app_bar)
+    AppBarLayout mAppBarLayout;
+
+    @BindView(R.id.activity_image_detail_collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+
+    @BindView(R.id.activity_image_detail_toolbar)
+    Toolbar mToolbar;
+
+    @BindView(R.id.activity_image_detail_fab)
+    FloatingActionButton mFab;
+
+    @OnClick(R.id.activity_image_detail_fab)
+    public void onFabClick() {
+        switch (mMediaType) {
+            case "image":
+                Intent imageIntent = new Intent(this, ImagePreviewActivity.class);
+                Bundle args = new Bundle();
+                args.putString(ImagePreviewActivity.ARGUMENT_APOD_DATE, mDate);
+                imageIntent.putExtras(args);
+                startActivity(imageIntent);
+                break;
+            case "video":
+                Intent videoIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUrl));
+                startActivity(videoIntent);
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
+        ButterKnife.bind(this);
 
         mDate = getIntent().getStringExtra(ImageDetailActivity.ARGUMENT_APOD_DATE);
         mMediaType = getIntent().getStringExtra(ImageDetailActivity.ARGUMENT_APOD_MEDIA_TYPE);
         mUrl = getIntent().getStringExtra(ImageDetailActivity.ARGUMENT_APOD_URL);
 
         initView();
-        initUI();
+        initTheme();
         initAnimation();
 
-        mPresenter = new ImageDetailPresenter(mDate, Injection.provideApodRepository(getApplicationContext()), this);
+        new ImageDetailPresenter(mDate, Injection.provideApodRepository(getApplicationContext()), this);
         mPresenter.subscribe();
     }
 
@@ -70,72 +100,7 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        fab.setVisibility(View.INVISIBLE);
-    }
-
-    private void initView() {
-        final String toolbarTitle = mMediaType.equalsIgnoreCase("image") ? getString(R.string.title_photo) : getString(R.string.title_video);
-        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.activity_image_detail_collapsing_toolbar);
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.activity_image_detail_app_bar);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.setTitle(toolbarTitle);
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbarLayout.setTitle(" ");
-                    isShow = false;
-                }
-            }
-        });
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_image_detail_toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayShowTitleEnabled(false);
-
-        fab = (FloatingActionButton) findViewById(R.id.activity_image_detail_fab);
-        fab.setOnClickListener(view -> {
-            if (mMediaType.equalsIgnoreCase("image")) {
-                Intent imageIntent = new Intent(view.getContext(), ImagePreviewActivity.class);
-                Bundle args = new Bundle();
-                args.putString(ImagePreviewActivity.ARGUMENT_APOD_DATE, mDate);
-                imageIntent.putExtras(args);
-                startActivity(imageIntent);
-            } else {
-                Intent videoIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUrl));
-                startActivity(videoIntent);
-            }
-        });
-    }
-
-    private void initUI() {
-        if (ThemeUtils.isLightTheme(this)) {
-            ((ImageButton) findViewById(R.id.container_image_detail_download_btn)).setImageResource(R.drawable.ic_download_light);
-            ((ImageButton) findViewById(R.id.container_image_detail_share_btn)).setImageResource(R.drawable.ic_send_light);
-            if (mMediaType.equalsIgnoreCase("image")) {
-                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_dark));
-            } else {
-                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_dark));
-            }
-        } else {
-            ((ImageButton) findViewById(R.id.container_image_detail_download_btn)).setImageResource(R.drawable.ic_download_dark);
-            ((ImageButton) findViewById(R.id.container_image_detail_share_btn)).setImageResource(R.drawable.ic_send_dark);
-            if (mMediaType.equalsIgnoreCase("image")) {
-                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_light));
-            } else {
-                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_light));
-            }
-        }
+        mFab.setVisibility(View.INVISIBLE);
     }
 
     private void initAnimation() {
@@ -146,7 +111,7 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         AnimUtils.translationView(titleContainer, 300);
         AnimUtils.translationView(actionContainer, 350);
         AnimUtils.translationView(contentContainer, 400);
-        AnimUtils.initFabShow(fab, 400);
+        AnimUtils.initFabShow(mFab, 400);
     }
 
     @Override
@@ -170,7 +135,7 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
                         Palette.Swatch swatch = ImageUtils.getImageColor(palette);
                         if (swatch != null) {
                             setLightFab();
-                            fab.setBackgroundTintList(ColorStateList.valueOf(palette.getVibrantColor(swatch.getRgb())));
+                            mFab.setBackgroundTintList(ColorStateList.valueOf(palette.getVibrantColor(swatch.getRgb())));
                         }
                     }
                 });
@@ -218,11 +183,53 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 
+    private void initView() {
+        final String toolbarTitle = mMediaType.equalsIgnoreCase("image") ? getString(R.string.title_photo) : getString(R.string.title_video);
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    mCollapsingToolbarLayout.setTitle(toolbarTitle);
+                    isShow = true;
+                } else if (isShow) {
+                    mCollapsingToolbarLayout.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
+    }
+
+    private void initTheme() {
+        if (ThemeUtils.isLightTheme(this)) {
+            ((ImageButton) findViewById(R.id.container_image_detail_download_btn)).setImageResource(R.drawable.ic_download_light);
+            ((ImageButton) findViewById(R.id.container_image_detail_share_btn)).setImageResource(R.drawable.ic_send_light);
+            setLightFab();
+        } else {
+            ((ImageButton) findViewById(R.id.container_image_detail_download_btn)).setImageResource(R.drawable.ic_download_dark);
+            ((ImageButton) findViewById(R.id.container_image_detail_share_btn)).setImageResource(R.drawable.ic_send_dark);
+            setDarkFab();
+        }
+    }
+
     private void setLightFab() {
         if (mMediaType.equalsIgnoreCase("image")) {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_dark));
+            mFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_dark));
         } else {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_dark));
+            mFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_dark));
+        }
+    }
+
+    private void setDarkFab() {
+        if (mMediaType.equalsIgnoreCase("image")) {
+            mFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_light));
+        } else {
+            mFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_light));
         }
     }
 }

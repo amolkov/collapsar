@@ -17,6 +17,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.utils.AnimUtils;
@@ -50,10 +52,10 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
 
     @Override
     public void onBindItemViewHolder(RecyclerView.ViewHolder genericHolder, final int position) {
-        final RecentImagesViewHolder holder = (RecentImagesViewHolder) genericHolder;
-        final Apod apod = mData.get(position);
-        final boolean isPhoto = apod.getMediaType().equalsIgnoreCase("image");
-        final String url = isPhoto ? apod.getUrl() : ImageUtils.getThumbnailUrl(apod.getUrl());
+        RecentImagesViewHolder holder = (RecentImagesViewHolder) genericHolder;
+        Apod apod = mData.get(position);
+        boolean isPhoto = apod.getMediaType().equalsIgnoreCase("image");
+        String url = isPhoto ? apod.getUrl() : ImageUtils.getThumbnailUrl(apod.getUrl());
         holder.setupDefaultValues(position);
 
         Glide.with(getContext())
@@ -129,28 +131,23 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
         mOnItemClickListener = onItemClickListener;
     }
 
-    private class RecentImagesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public View mItemView;
-        public View mContentContainer;
-
-        public ImageView mPhoto;
-        public TextView mTitle;
-        public TextView mSubtitle;
-        public ImageView mVideoIcon;
+    public class RecentImagesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public View mView;
         public OnItemClickListener mOnItemClickListener;
 
-        public RecentImagesViewHolder(View itemView, OnItemClickListener onClickListener) {
-            super(itemView);
-            mItemView = itemView;
-            mContentContainer = itemView.findViewById(R.id.item_grid_content_container);
+        @BindView(R.id.item_grid_content_container) View mContentContainer;
+        @BindView(R.id.item_grid_photo) ImageView mPhoto;
+        @BindView(R.id.item_grid_title) TextView mTitle;
+        @BindView(R.id.item_grid_subtitle) TextView mSubtitle;
+        @BindView(R.id.item_grid_video_icon) ImageView mVideoIcon;
 
-            mPhoto = (ImageView) itemView.findViewById(R.id.item_grid_photo);
-            mTitle = (TextView) itemView.findViewById(R.id.item_grid_title);
-            mSubtitle = (TextView) itemView.findViewById(R.id.item_grid_subtitle);
-            mVideoIcon = (ImageView) itemView.findViewById(R.id.item_grid_video_icon);
+        public RecentImagesViewHolder(View view, OnItemClickListener onClickListener) {
+            super(view);
+            ButterKnife.bind(this, view);
 
             mOnItemClickListener = onClickListener;
-            itemView.setOnClickListener(this);
+            mView = view;
+            mView.setOnClickListener(this);
         }
 
         @Override
@@ -161,7 +158,7 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
         }
 
         public void setupDefaultValues(int position) {
-            mItemView.setBackground(mPlaceholderColors[position % mPlaceholderColors.length]);
+            mView.setBackground(mPlaceholderColors[position % mPlaceholderColors.length]);
             mContentContainer.setBackground(null);
             mTitle.setText(null);
             mSubtitle.setText(null);

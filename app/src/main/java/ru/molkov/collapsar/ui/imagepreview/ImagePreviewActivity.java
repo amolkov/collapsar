@@ -9,6 +9,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.molkov.collapsar.Injection;
 import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.utils.glide.PaletteBitmap;
@@ -21,11 +23,14 @@ public class ImagePreviewActivity extends AppCompatActivity implements ImagePrev
 
     private ImagePreviewContract.Presenter mPresenter;
 
+    @BindView(R.id.activity_image_preview_photo)
+    ImageView photo;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_image_preview);
+        ButterKnife.bind(this);
 
         String date = getIntent().getStringExtra(ImagePreviewActivity.ARGUMENT_APOD_DATE);
         mPresenter = new ImagePreviewPresenter(date, Injection.provideApodRepository(getApplicationContext()), this);
@@ -34,24 +39,23 @@ public class ImagePreviewActivity extends AppCompatActivity implements ImagePrev
 
     @Override
     public void setPhoto(String url) {
-        ImageView view = (ImageView) findViewById(R.id.activity_image_preview_photo);
         Glide.with(this)
                 .load(url)
                 .asBitmap()
                 .transcode(new PaletteBitmapTranscoder(this), PaletteBitmap.class)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .priority(Priority.IMMEDIATE)
-                .into(new PaletteBitmapViewTarget(view) {
+                .into(new PaletteBitmapViewTarget(photo) {
                     @Override
                     protected void setResource(PaletteBitmap resource) {
                         super.setResource(resource);
-                        new PhotoViewAttacher(view);
+                        new PhotoViewAttacher(photo);
                     }
                 });
     }
 
     @Override
     public void setPresenter(ImagePreviewContract.Presenter presenter) {
-
+        mPresenter = presenter;
     }
 }

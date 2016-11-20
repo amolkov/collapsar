@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import ru.molkov.collapsar.Injection;
 import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.data.model.Apod;
@@ -29,11 +32,13 @@ import ru.molkov.collapsar.views.OnLoadMoreListener;
 public class RecentImagesFragment extends Fragment implements RecentImagesContract.View {
     private RecentImagesContract.Presenter mPresenter;
     private RecentImagesAdapter mAdapter;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Unbinder unbinder;
 
-    public RecentImagesFragment() {
+    @BindView(R.id.fragment_recent_images_swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
-    }
+    @BindView(R.id.fragment_recent_images_recycler_view)
+    RecyclerView mRecyclerView;
 
     public static RecentImagesFragment getInstance() {
         return new RecentImagesFragment();
@@ -42,46 +47,17 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mPresenter = new RecentImagesPresenter(Injection.provideApodRepository(getContext()), this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_recent_images, container, false);
+        View v = inflater.inflate(R.layout.fragment_recent_images, container, false);
+        unbinder = ButterKnife.bind(this, v);
 
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.apod_list);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                switch (mAdapter.getItemViewType(position)) {
-                    case RecentImagesAdapter.VIEW_TYPE_ITEM:
-                        return 1;
-                    case RecentImagesAdapter.VIEW_TYPE_PROGRESS:
-                        return 2;
-                    default:
-                        return -1;
-                }
-            }
-        });
-        recyclerView.setLayoutManager(gridLayoutManager);
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
-        if (ThemeUtils.isLightTheme(getActivity())) {
-            // TODO
-        } else {
-            mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
-            mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorContent_dark));
-        }
-
-        mAdapter = new RecentImagesAdapter(getActivity(), recyclerView);
-        mAdapter.setOnLoadMoreListener(mOnLoadMoreListener);
-        mAdapter.setOnItemClickListener(mOnItemClickListener);
-        recyclerView.setAdapter(mAdapter);
-
-        return root;
+        initView();
+        initTheme();
+        return v;
     }
 
     @Override
@@ -94,6 +70,12 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
     public void onDestroy() {
         super.onDestroy();
         mPresenter.unsubscribe();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
@@ -124,6 +106,39 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
     @Override
     public void showError(String error) {
         Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    private void initView() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (mAdapter.getItemViewType(position)) {
+                    case RecentImagesAdapter.VIEW_TYPE_ITEM:
+                        return 1;
+                    case RecentImagesAdapter.VIEW_TYPE_PROGRESS:
+                        return 2;
+                    default:
+                        return -1;
+                }
+            }
+        });
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+
+        mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
+        mAdapter = new RecentImagesAdapter(getActivity(), mRecyclerView);
+        mAdapter.setOnLoadMoreListener(mOnLoadMoreListener);
+        mAdapter.setOnItemClickListener(mOnItemClickListener);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void initTheme() {
+        if (ThemeUtils.isLightTheme(getActivity())) {
+            // TODO
+        } else {
+            mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
+            mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorContent_dark));
+        }
     }
 
     private OnLoadMoreListener mOnLoadMoreListener = new OnLoadMoreListener() {

@@ -25,7 +25,6 @@ public class ImagePreviewPresenter implements ImagePreviewContract.Presenter {
         mView = view;
         mView.setPresenter(this);
         mSubscriptions = new CompositeSubscription();
-
         mApodDate = apodDate;
     }
 
@@ -61,7 +60,8 @@ public class ImagePreviewPresenter implements ImagePreviewContract.Presenter {
 
                     @Override
                     public void onNext(Apod apod) {
-                        mView.setPhoto(apod.getUrl());
+                        String url = apod.getUrlHd() != null ? apod.getUrlHd() : apod.getUrl();
+                        mView.setPhoto(url);
                     }
                 });
         mSubscriptions.add(subscription);

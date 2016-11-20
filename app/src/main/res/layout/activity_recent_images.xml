@@ -18,7 +18,8 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/CollapsarPopupMenuTheme"
-            app:theme="@style/CollapsarToolbarTheme" />
+            app:theme="@style/CollapsarToolbarTheme"
+            app:title="@string/app_name" />
 
     </android.support.design.widget.AppBarLayout>
 

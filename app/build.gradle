@@ -51,6 +51,9 @@ dependencies {
     compile "io.reactivex:rxjava:$rootProject.rxJavaVersion"
     compile "io.reactivex:rxandroid:$rootProject.rxAndroidVersion"
     compile "com.jakewharton.timber:timber:$rootProject.timberVersion"
+    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.butterknifeVersion"
+
     compile "com.github.chrisbanes:PhotoView:$rootProject.photoVIewVersion"
 
     // Dependencies for local unit tests
