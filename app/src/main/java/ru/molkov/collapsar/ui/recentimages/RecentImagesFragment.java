@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.List;
@@ -32,10 +33,13 @@ import ru.molkov.collapsar.views.OnLoadMoreListener;
 public class RecentImagesFragment extends Fragment implements RecentImagesContract.View {
     private RecentImagesContract.Presenter mPresenter;
     private RecentImagesAdapter mAdapter;
-    private Unbinder unbinder;
+    private Unbinder mUnbinder;
 
     @BindView(R.id.fragment_recent_images_swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
+
+    @BindView(R.id.fragment_recent_images_progress_bar)
+    ProgressBar mFirsLoadProgress;
 
     @BindView(R.id.fragment_recent_images_recycler_view)
     RecyclerView mRecyclerView;
@@ -53,7 +57,7 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_recent_images, container, false);
-        unbinder = ButterKnife.bind(this, v);
+        mUnbinder = ButterKnife.bind(this, v);
 
         initView();
         initTheme();
@@ -75,7 +79,7 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mUnbinder.unbind();
     }
 
     @Override
@@ -91,6 +95,19 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
     @Override
     public void showUpdatedApods(List<Apod> apods) {
         mAdapter.setItems(apods);
+    }
+
+    @Override
+    public void setFirstLoadProgress(boolean isActive) {
+        if (isActive) {
+            mFirsLoadProgress.setVisibility(View.VISIBLE);
+            mSwipeRefreshLayout.setEnabled(false);
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            mFirsLoadProgress.setVisibility(View.GONE);
+            mSwipeRefreshLayout.setEnabled(true);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -133,6 +150,8 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
     }
 
     private void initTheme() {
+        mFirsLoadProgress.getIndeterminateDrawable().setColorFilter(ThemeUtils.getThemeColor(getActivity(), R.attr.colorAccent), android.graphics.PorterDuff.Mode.SRC_IN);
+
         if (ThemeUtils.isLightTheme(getActivity())) {
             // TODO
         } else {

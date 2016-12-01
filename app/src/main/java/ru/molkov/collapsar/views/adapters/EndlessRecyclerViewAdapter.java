@@ -23,6 +23,7 @@ public abstract class EndlessRecyclerViewAdapter<T> extends RecyclerView.Adapter
     private int mItemCount;
     private int mLastVisibleItemPosition;
     private boolean mLoading;
+    private boolean mLoadingAvailable;
 
     public abstract void onLoadMore();
 
@@ -44,9 +45,15 @@ public abstract class EndlessRecyclerViewAdapter<T> extends RecyclerView.Adapter
 
                     mItemCount = linearLayoutManager.getItemCount();
                     mLastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
-                    if (getItems().size() > 0 && !mLoading && mItemCount <= (mLastVisibleItemPosition + VISIBLE_THRESHOLD)) {
+
+                    if (mLastVisibleItemPosition + VISIBLE_THRESHOLD < mItemCount) {
+                        setLoadingAvailable(true);
+                    }
+
+                    if (getItems().size() > 0 && !mLoading && mLoadingAvailable && mItemCount <= (mLastVisibleItemPosition + VISIBLE_THRESHOLD)) {
                         onLoadMore();
                         setLoading(true);
+                        setLoadingAvailable(false);
                     }
                 }
             });
@@ -95,12 +102,11 @@ public abstract class EndlessRecyclerViewAdapter<T> extends RecyclerView.Adapter
             getItems().remove(null);
         }
         mLoading = loading;
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                notifyDataSetChanged();
-            }
-        });
+        new Handler().post(() -> notifyDataSetChanged());
+    }
+
+    public void setLoadingAvailable(boolean available) {
+        mLoadingAvailable = available;
     }
 
     public void addItems(List<T> items) {
@@ -120,7 +126,6 @@ public abstract class EndlessRecyclerViewAdapter<T> extends RecyclerView.Adapter
 
     private void onBindProgressView(RecyclerView.ViewHolder genericHolder, int position) {
         ProgressViewHolder holder = (ProgressViewHolder) genericHolder;
-        holder.mProgressBar.setIndeterminate(true);
         holder.mProgressBar.getIndeterminateDrawable().setColorFilter(ThemeUtils.getThemeColor(mContext, R.attr.colorAccent), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 

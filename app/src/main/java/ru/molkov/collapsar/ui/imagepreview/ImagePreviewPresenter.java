@@ -50,7 +50,6 @@ public class ImagePreviewPresenter implements ImagePreviewContract.Presenter {
                 .subscribe(new Observer<Apod>() {
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
@@ -60,8 +59,7 @@ public class ImagePreviewPresenter implements ImagePreviewContract.Presenter {
 
                     @Override
                     public void onNext(Apod apod) {
-                        String url = apod.getUrlHd() != null ? apod.getUrlHd() : apod.getUrl();
-                        mView.setPhoto(url);
+                        mView.setPhoto(apod.getUrl());
                     }
                 });
         mSubscriptions.add(subscription);

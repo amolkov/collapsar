@@ -71,7 +71,7 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
                     @Override
                     public void onNext(List<Apod> apods) {
                         mView.showLoadedApods(apods);
-                        updateLastLoadedDate(apods.get(apods.size() - 1).getDate());
+                        updateLastLoadedDate(apods);
                     }
                 });
         mSubscriptions.add(subscription);
@@ -79,9 +79,13 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
 
     @Override
     public void refreshApods(boolean isForceUpdate) {
-        if (isForceUpdate || mFirstLoad) {
-            mView.setRefreshIndicator(true);
+        if (mFirstLoad) {
+            mView.setFirstLoadProgress(true);
             mFirstLoad = false;
+        }
+
+        if (isForceUpdate) {
+            mView.setRefreshIndicator(true);
         }
         mSubscriptions.clear();
 
@@ -93,6 +97,7 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
                 .subscribe(new Observer<List<Apod>>() {
                     @Override
                     public void onCompleted() {
+                        mView.setFirstLoadProgress(false);
                         mView.setRefreshIndicator(false);
                     }
 
@@ -107,14 +112,17 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
                     @Override
                     public void onNext(List<Apod> apods) {
                         mView.showUpdatedApods(apods);
-                        updateLastLoadedDate(apods.get(apods.size() - 1).getDate());
+                        updateLastLoadedDate(apods);
+
                     }
                 });
         mSubscriptions.add(subscription);
     }
 
-    private void updateLastLoadedDate(Date lastLoadedDate) {
-        mLastLoadedDate = lastLoadedDate;
+    private void updateLastLoadedDate(List<Apod> apods) {
+        if (apods != null && !apods.isEmpty()) {
+            mLastLoadedDate = apods.get(apods.size() - 1).getDate();
+        }
     }
 
     private void processError(Throwable throwable) {

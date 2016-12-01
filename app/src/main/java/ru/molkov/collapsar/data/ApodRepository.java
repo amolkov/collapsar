@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ru.molkov.collapsar.App;
 import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.data.source.local.ILocalDataSource;
 import ru.molkov.collapsar.data.source.remote.IRemoteDataSource;
@@ -41,10 +42,14 @@ public class ApodRepository implements IRepository<Apod> {
             return Observable.just(cachedApod);
         }
         */
+        Observable<Apod> localApod = mLocalDataSource.get(date).doOnNext(apod -> putToCache(apod)).first();
 
-        Observable<Apod> localApod = mLocalDataSource.get(date).doOnNext(apod -> putToCache(apod));
-        Observable<Apod> remoteApod = mRemoteDataSource.get(date).doOnNext(apod -> create(apod));
-        return Observable.concat(localApod.first(), remoteApod).takeFirst(apod -> apod != null);
+        if (!App.isNetworkAvailable()) {
+            return localApod.filter(apod -> apod != null);
+        } else {
+            Observable<Apod> remoteApod = mRemoteDataSource.get(date).doOnNext(apod -> create(apod));
+            return Observable.concat(localApod, remoteApod).takeFirst(apod -> apod != null);
+        }
     }
 
 

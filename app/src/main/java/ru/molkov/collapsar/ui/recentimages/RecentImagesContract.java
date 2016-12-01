@@ -14,6 +14,8 @@ public interface RecentImagesContract {
 
         void showUpdatedApods(List<Apod> apods);
 
+        void setFirstLoadProgress(boolean isActive);
+
         void setLoadingIndicator(boolean isActive);
 
         void setRefreshIndicator(boolean isActive);
