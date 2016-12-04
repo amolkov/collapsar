@@ -71,7 +71,7 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
                         Palette.Swatch swatch = ImageUtils.getImageColor(palette);
 
                         holder.mTitle.setText(apod.getTitle());
-                        holder.mSubtitle.setText(DateUtils.friendlyFormat(apod.getDate()));
+                        holder.mSubtitle.setText(DateUtils.friendlyFormat(apod.getDate(), true));
                         if (!isPhoto) {
                             holder.mVideoIcon.setVisibility(View.VISIBLE);
                         }
@@ -94,7 +94,7 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
                         super.onLoadFailed(e, errorDrawable);
 
                         holder.mTitle.setText(apod.getTitle());
-                        holder.mSubtitle.setText(DateUtils.friendlyFormat(apod.getDate()));
+                        holder.mSubtitle.setText(DateUtils.friendlyFormat(apod.getDate(), true));
                         if (!isPhoto) {
                             holder.mVideoIcon.setVisibility(View.VISIBLE);
                         }

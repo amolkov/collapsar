@@ -11,7 +11,7 @@ import java.util.TimeZone;
 
 public class DateUtils {
 
-    public static Date toDate(final String date) {
+    public static Date toDate(String date) {
         Date result = null;
         try {
             SimpleDateFormat parser = new SimpleDateFormat(Constants.APOD_DATE_FORMAT, Locale.US);
@@ -22,7 +22,7 @@ public class DateUtils {
         return result;
     }
 
-    public static String toString(final Date date) {
+    public static String toString(Date date) {
         if (date == null) {
             return "";
         }
@@ -30,9 +30,9 @@ public class DateUtils {
         return formatter.format(date);
     }
 
-    public static String friendlyFormat(final Date date) {
+    public static String friendlyFormat(Date date, boolean withRelativeTime) {
         int diff = daysBetween(date, new Date());
-        if (diff <= 5) {
+        if (withRelativeTime && diff <= 5) {
             return android.text.format.DateUtils.getRelativeTimeSpanString(date.getTime()).toString();
         } else {
             SimpleDateFormat formatter = new SimpleDateFormat(Constants.FRIENDLY_DATE_FORMAT, Locale.US);
@@ -40,7 +40,7 @@ public class DateUtils {
         }
     }
 
-    public static List<Date> getDatesToLoad(final Date dateFrom, final int count) {
+    public static List<Date> getDatesToLoad(Date dateFrom, int count) {
         List<Date> result = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             int diff = 0 - i;
@@ -49,18 +49,18 @@ public class DateUtils {
         return result;
     }
 
-    public static Date addDays(final Date date, final int days) {
+    public static Date addDays(Date date, int days) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(Calendar.DATE, days);
         return cal.getTime();
     }
 
-    public static int daysBetween(final Date startDate, final Date endDate) {
+    public static int daysBetween(Date startDate, Date endDate) {
         return (int) ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
     }
 
-    public static Date toGMT(final Date localDate) {
+    public static Date toGMT(Date localDate) {
         TimeZone tz = TimeZone.getDefault();
         Date result = new Date(localDate.getTime() - tz.getRawOffset());
 

@@ -1,5 +1,7 @@
 package ru.molkov.collapsar.ui.imagedetail;
 
+import android.app.Activity;
+
 import ru.molkov.collapsar.ui.base.BasePresenter;
 import ru.molkov.collapsar.ui.base.BaseView;
 
@@ -23,5 +25,9 @@ public interface ImageDetailContract {
     interface Presenter extends BasePresenter {
 
         void openApod();
+
+        void downloadApod(Activity activity);
+
+        void shareApod(Activity activity);
     }
 }

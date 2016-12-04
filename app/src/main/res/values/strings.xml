@@ -23,4 +23,7 @@
 
     <string name="transition_photo">transition_photo</string>
     <string name="transition_background">transition_background</string>
+
+    <!-- content authorities -->
+    <string name="share_authority" translatable="false">ru.molkov.collapsar.shareprovider</string>
 </resources>

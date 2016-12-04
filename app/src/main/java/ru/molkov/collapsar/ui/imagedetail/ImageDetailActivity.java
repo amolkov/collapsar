@@ -73,6 +73,16 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         }
     }
 
+    @OnClick(R.id.container_image_detail_download_btn)
+    public void download() {
+        mPresenter.downloadApod(ImageDetailActivity.this);
+    }
+
+    @OnClick(R.id.container_image_detail_share_btn)
+    public void share() {
+        mPresenter.shareApod(ImageDetailActivity.this);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -203,6 +213,8 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
                 }
             }
         });
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_left_light);
+        mToolbar.setNavigationOnClickListener(view -> onBackPressed());
     }
 
     private void initTheme() {

@@ -1,10 +1,13 @@
 package ru.molkov.collapsar.ui.imagedetail;
 
+import android.app.Activity;
+
 import java.util.Date;
 
 import ru.molkov.collapsar.data.IRepository;
 import ru.molkov.collapsar.data.core.error.RetrofitException;
 import ru.molkov.collapsar.data.model.Apod;
+import ru.molkov.collapsar.ui.ShareTask;
 import ru.molkov.collapsar.utils.DateUtils;
 import ru.molkov.collapsar.utils.ImageUtils;
 import rx.Observer;
@@ -20,6 +23,7 @@ public class ImageDetailPresenter implements ImageDetailContract.Presenter {
 
     private CompositeSubscription mSubscriptions;
     private String mApodDate;
+    private Apod mApod;
 
     public ImageDetailPresenter(String apodDate, IRepository<Apod> repository, ImageDetailContract.View view) {
         mRepository = repository;
@@ -64,16 +68,27 @@ public class ImageDetailPresenter implements ImageDetailContract.Presenter {
 
                     @Override
                     public void onNext(Apod apod) {
+                        mApod = apod;
                         showApod(apod);
                     }
                 });
         mSubscriptions.add(subscription);
     }
 
+    @Override
+    public void downloadApod(Activity activity) {
+
+    }
+
+    @Override
+    public void shareApod(Activity activity) {
+        new ShareTask(activity, mApod).execute();
+    }
+
     private void showApod(Apod apod) {
         mView.setPhoto(apod.getMediaType().equalsIgnoreCase("image") ? apod.getUrl() : ImageUtils.getThumbnailUrl(apod.getUrl()));
         mView.setTitle(apod.getTitle());
-        mView.setSubtitle(DateUtils.friendlyFormat(apod.getDate()));
+        mView.setSubtitle(DateUtils.friendlyFormat(apod.getDate(), true));
         mView.setExplanation(apod.getExplanation());
         mView.setCopyright(formatCopyright(apod));
     }
