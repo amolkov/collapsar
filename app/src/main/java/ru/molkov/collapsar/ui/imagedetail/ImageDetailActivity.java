@@ -213,7 +213,7 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
                 }
             }
         });
-        mToolbar.setNavigationIcon(R.drawable.ic_arrow_left_light);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_left);
         mToolbar.setNavigationOnClickListener(view -> onBackPressed());
     }
 

@@ -49,7 +49,7 @@ public class ShareTask extends AsyncTask<Void, Void, File> {
         Uri uri = FileProvider.getUriForFile(mActivity, mActivity.getString(R.string.share_authority), file);
         ShareCompat.IntentBuilder.from(mActivity)
                 .setText(getShareText())
-                .setType("image/*")
+                .setType("image/jpeg")
                 .setSubject(mApod.getTitle())
                 .setStream(uri)
                 .startChooser();
