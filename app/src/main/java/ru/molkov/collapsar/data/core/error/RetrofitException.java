@@ -12,7 +12,7 @@ public class RetrofitException extends RuntimeException {
     private final Response mResponse;
     private final Kind mKind;
 
-    RetrofitException(String message, Throwable exception, String url, Response response, Kind kind) {
+    public RetrofitException(String message, Throwable exception, String url, Response response, Kind kind) {
         super(message, exception);
         mUrl = url;
         mResponse = response;

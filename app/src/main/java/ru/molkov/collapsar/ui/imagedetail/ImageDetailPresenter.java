@@ -1,21 +1,24 @@
 package ru.molkov.collapsar.ui.imagedetail;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 
 import java.util.Date;
 
 import ru.molkov.collapsar.data.IRepository;
 import ru.molkov.collapsar.data.core.error.RetrofitException;
 import ru.molkov.collapsar.data.model.Apod;
-import ru.molkov.collapsar.ui.ShareTask;
 import ru.molkov.collapsar.utils.DateUtils;
 import ru.molkov.collapsar.utils.ImageUtils;
+import ru.molkov.collapsar.utils.share.ShareTask;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ImageDetailPresenter implements ImageDetailContract.Presenter {
     private final IRepository<Apod> mRepository;
@@ -25,12 +28,12 @@ public class ImageDetailPresenter implements ImageDetailContract.Presenter {
     private String mApodDate;
     private Apod mApod;
 
-    public ImageDetailPresenter(String apodDate, IRepository<Apod> repository, ImageDetailContract.View view) {
-        mRepository = repository;
-        mView = view;
+    public ImageDetailPresenter(String apodDate, @NonNull IRepository<Apod> repository, @NonNull ImageDetailContract.View view) {
+        mApodDate = apodDate;
+        mRepository = checkNotNull(repository);
+        mView = checkNotNull(view);
         mView.setPresenter(this);
         mSubscriptions = new CompositeSubscription();
-        mApodDate = apodDate;
     }
 
     @Override
@@ -45,8 +48,6 @@ public class ImageDetailPresenter implements ImageDetailContract.Presenter {
 
     @Override
     public void openApod() {
-        mSubscriptions.clear();
-
         Date date = DateUtils.toDate(mApodDate);
         Subscription subscription = mRepository
                 .get(date)

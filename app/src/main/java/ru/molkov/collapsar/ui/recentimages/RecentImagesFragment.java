@@ -125,6 +125,23 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
         Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void showApodDetails(Apod apod, View view) {
+        Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
+        Bundle args = new Bundle();
+        args.putString(ImageDetailActivity.ARGUMENT_APOD_DATE, DateUtils.toString(apod.getDate()));
+        args.putString(ImageDetailActivity.ARGUMENT_APOD_MEDIA_TYPE, apod.getMediaType());
+        args.putString(ImageDetailActivity.ARGUMENT_APOD_URL, apod.getUrl());
+        intent.putExtras(args);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                getActivity(),
+                Pair.create(view.findViewById(R.id.item_grid_photo), getString(R.string.transition_photo)),
+                Pair.create(view.findViewById(R.id.item_grid_photo), getString(R.string.transition_background)));
+
+        ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
+    }
+
     private void initView() {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -178,20 +195,7 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
         @Override
         public void onItemClick(View v, int position) {
             Apod apod = mAdapter.getItems().get(position);
-
-            Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-            Bundle args = new Bundle();
-            args.putString(ImageDetailActivity.ARGUMENT_APOD_DATE, DateUtils.toString(apod.getDate()));
-            args.putString(ImageDetailActivity.ARGUMENT_APOD_MEDIA_TYPE, apod.getMediaType());
-            args.putString(ImageDetailActivity.ARGUMENT_APOD_URL, apod.getUrl());
-            intent.putExtras(args);
-
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    getActivity(),
-                    Pair.create(v.findViewById(R.id.item_grid_photo), getString(R.string.transition_photo)),
-                    Pair.create(v.findViewById(R.id.item_grid_photo), getString(R.string.transition_background)));
-
-            ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
+            mPresenter.openApodDetails(apod, v);
         }
     };
 }

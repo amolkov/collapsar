@@ -75,12 +75,7 @@ public class AnimUtils {
         final ObservableColorMatrix colorMatrix = new ObservableColorMatrix();
         final ObjectAnimator animator = ObjectAnimator.ofFloat(
                 colorMatrix, ObservableColorMatrix.SATURATION, 0f, 1f);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                view.setColorFilter(new ColorMatrixColorFilter(colorMatrix));
-            }
-        });
+        animator.addUpdateListener(valueAnimator -> view.setColorFilter(new ColorMatrixColorFilter(colorMatrix)));
         animator.setDuration(2000L);
         animator.setInterpolator(getFastOutSlowInInterpolator(view.getContext()));
         animator.addListener(new AnimatorListenerAdapter() {

@@ -1,5 +1,7 @@
 package ru.molkov.collapsar.data.source.remote;
 
+import android.support.annotation.NonNull;
+
 import java.util.Date;
 
 import ru.molkov.collapsar.data.model.Apod;
@@ -33,8 +35,8 @@ public class ApodRemoteDataSource extends AbstractRemoteDataSource implements IR
     }
 
     @Override
-    public Observable<Apod> get(Date date) {
-        final String formattedDate = DateUtils.toString(date);
+    public Observable<Apod> get(@NonNull Date date) {
+        String formattedDate = DateUtils.toString(date);
         return mApodApi.getApod(formattedDate, NASA_API_KEY);
     }
 }

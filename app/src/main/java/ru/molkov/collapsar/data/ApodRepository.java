@@ -1,5 +1,7 @@
 package ru.molkov.collapsar.data;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,23 +16,25 @@ import ru.molkov.collapsar.utils.DateUtils;
 import ru.molkov.collapsar.utils.ImageUtils;
 import rx.Observable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class ApodRepository implements IRepository<Apod> {
     private static ApodRepository INSTANCE = null;
-    private final IRemoteDataSource<Apod> mRemoteDataSource;
     private final ILocalDataSource<Apod> mLocalDataSource;
+    private final IRemoteDataSource<Apod> mRemoteDataSource;
 
     private Map<String, Apod> mCachedData;
 
-    public static ApodRepository getInstance(IRemoteDataSource<Apod> remoteDataSource, ILocalDataSource<Apod> localDataSource) {
+    public static ApodRepository getInstance(ILocalDataSource<Apod> localDataSource, IRemoteDataSource<Apod> remoteDataSource) {
         if (INSTANCE == null) {
-            INSTANCE = new ApodRepository(remoteDataSource, localDataSource);
+            INSTANCE = new ApodRepository(localDataSource, remoteDataSource);
         }
         return INSTANCE;
     }
 
-    private ApodRepository(IRemoteDataSource<Apod> remoteDataSource, ILocalDataSource<Apod> localDataSource) {
-        mRemoteDataSource = remoteDataSource;
-        mLocalDataSource = localDataSource;
+    private ApodRepository(@NonNull ILocalDataSource<Apod> localDataSource, @NonNull IRemoteDataSource<Apod> remoteDataSource) {
+        mLocalDataSource = checkNotNull(localDataSource);
+        mRemoteDataSource = checkNotNull(remoteDataSource);
         mCachedData = new HashMap<>();
     }
 

@@ -2,6 +2,7 @@ package ru.molkov.collapsar.ui.imagedetail;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -99,6 +100,8 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
 
         new ImageDetailPresenter(mDate, Injection.provideApodRepository(getApplicationContext()), this);
         mPresenter.subscribe();
+
+        postponeEnterTransition();
     }
 
     @Override
@@ -147,6 +150,14 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
                             setLightFab();
                             mFab.setBackgroundTintList(ColorStateList.valueOf(palette.getVibrantColor(swatch.getRgb())));
                         }
+
+                        startPostponedEnterTransition();
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                        startPostponedEnterTransition();
                     }
                 });
     }

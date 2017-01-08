@@ -1,5 +1,4 @@
-package ru.molkov.collapsar.ui;
-
+package ru.molkov.collapsar.utils.share;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -14,7 +13,6 @@ import java.io.File;
 
 import ru.molkov.collapsar.R;
 import ru.molkov.collapsar.data.model.Apod;
-import ru.molkov.collapsar.utils.DateUtils;
 import ru.molkov.collapsar.utils.ImageUtils;
 
 public class ShareTask extends AsyncTask<Void, Void, File> {
@@ -61,8 +59,6 @@ public class ShareTask extends AsyncTask<Void, Void, File> {
                 .append(mApod.getTitle())
                 .append("” ")
                 .append(formatCopyright())
-                .append(" ")
-                .append(formatDate())
                 .append("\n")
                 .append(formatUrl())
                 .toString();
@@ -82,9 +78,5 @@ public class ShareTask extends AsyncTask<Void, Void, File> {
             return "";
         }
         return mApod.getUrl();
-    }
-
-    private String formatDate() {
-        return "published on " + DateUtils.friendlyFormat(mApod.getDate(), false);
     }
 }

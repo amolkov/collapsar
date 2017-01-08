@@ -1,5 +1,8 @@
 package ru.molkov.collapsar.ui.recentimages;
 
+import android.support.annotation.NonNull;
+import android.view.View;
+
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +19,8 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class RecentImagesPresenter implements RecentImagesContract.Presenter {
     private final IRepository<Apod> mRepository;
     private final RecentImagesContract.View mView;
@@ -24,9 +29,9 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
     private Date mLastLoadedDate;
     private boolean mFirstLoad = true;
 
-    public RecentImagesPresenter(IRepository<Apod> repository, RecentImagesContract.View view) {
-        mRepository = repository;
-        mView = view;
+    public RecentImagesPresenter(@NonNull IRepository<Apod> repository, @NonNull RecentImagesContract.View view) {
+        mRepository = checkNotNull(repository);
+        mView = checkNotNull(view);
         mView.setPresenter(this);
         mSubscriptions = new CompositeSubscription();
     }
@@ -83,7 +88,6 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
             mView.setFirstLoadProgress(true);
             mFirstLoad = false;
         }
-
         if (isForceUpdate) {
             mView.setRefreshIndicator(true);
         }
@@ -117,6 +121,13 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
                     }
                 });
         mSubscriptions.add(subscription);
+    }
+
+    @Override
+    public void openApodDetails(@NonNull Apod apod, @NonNull View view) {
+        checkNotNull(apod);
+        checkNotNull(view);
+        mView.showApodDetails(apod, view);
     }
 
     private void updateLastLoadedDate(List<Apod> apods) {

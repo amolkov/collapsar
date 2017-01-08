@@ -21,6 +21,8 @@ public interface RecentImagesContract {
         void setRefreshIndicator(boolean isActive);
 
         void showError(String error);
+
+        void showApodDetails(Apod apod, android.view.View view);
     }
 
     interface Presenter extends BasePresenter {
@@ -28,5 +30,7 @@ public interface RecentImagesContract {
         void loadApods();
 
         void refreshApods(boolean isForeUpdate);
+
+        void openApodDetails(Apod apod, android.view.View view);
     }
 }

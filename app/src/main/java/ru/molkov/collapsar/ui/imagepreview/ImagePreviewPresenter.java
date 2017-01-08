@@ -1,6 +1,8 @@
 package ru.molkov.collapsar.ui.imagepreview;
 
 
+import android.support.annotation.NonNull;
+
 import java.util.Date;
 
 import ru.molkov.collapsar.data.IRepository;
@@ -13,6 +15,8 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class ImagePreviewPresenter implements ImagePreviewContract.Presenter {
     private final IRepository<Apod> mRepository;
     private final ImagePreviewContract.View mView;
@@ -20,12 +24,12 @@ public class ImagePreviewPresenter implements ImagePreviewContract.Presenter {
     private CompositeSubscription mSubscriptions;
     private String mApodDate;
 
-    public ImagePreviewPresenter(String apodDate, IRepository<Apod> repository, ImagePreviewContract.View view) {
-        mRepository = repository;
-        mView = view;
+    public ImagePreviewPresenter(String apodDate, @NonNull IRepository<Apod> repository, @NonNull ImagePreviewContract.View view) {
+        mApodDate = apodDate;
+        mRepository = checkNotNull(repository);
+        mView = checkNotNull(view);
         mView.setPresenter(this);
         mSubscriptions = new CompositeSubscription();
-        mApodDate = apodDate;
     }
 
     @Override
@@ -40,8 +44,6 @@ public class ImagePreviewPresenter implements ImagePreviewContract.Presenter {
 
     @Override
     public void openApod() {
-        mSubscriptions.clear();
-
         Date date = DateUtils.toDate(mApodDate);
         Subscription subscription = mRepository
                 .get(date)
