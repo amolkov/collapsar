@@ -1,6 +1,5 @@
 package ru.molkov.collapsar.ui.imagepreview;
 
-
 import android.support.annotation.NonNull;
 
 import java.util.Date;

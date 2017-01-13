@@ -26,4 +26,7 @@
 
     <!-- content authorities -->
     <string name="share_authority" translatable="false">ru.molkov.collapsar.shareprovider</string>
+
+    <string name="message_downloading">Downloading</string>
+    <string name="message_need_permission">Failed to get permission</string>
 </resources>

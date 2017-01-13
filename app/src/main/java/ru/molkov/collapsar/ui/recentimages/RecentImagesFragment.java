@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -127,11 +128,15 @@ public class RecentImagesFragment extends Fragment implements RecentImagesContra
 
     @Override
     public void showApodDetails(Apod apod, View view) {
+        ImageView itemPhoto = (ImageView) view.findViewById(R.id.item_grid_photo);
+        boolean isPostponeTransition = itemPhoto.getDrawable() != null;
+
         Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
         Bundle args = new Bundle();
         args.putString(ImageDetailActivity.ARGUMENT_APOD_DATE, DateUtils.toString(apod.getDate()));
         args.putString(ImageDetailActivity.ARGUMENT_APOD_MEDIA_TYPE, apod.getMediaType());
         args.putString(ImageDetailActivity.ARGUMENT_APOD_URL, apod.getUrl());
+        args.putBoolean(ImageDetailActivity.ARGUMENT_IS_POSTPONE_TRANSITION, isPostponeTransition);
         intent.putExtras(args);
 
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(

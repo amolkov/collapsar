@@ -1,6 +1,5 @@
 package ru.molkov.collapsar.ui.imagepreview;
 
-
 import ru.molkov.collapsar.ui.base.BasePresenter;
 import ru.molkov.collapsar.ui.base.BaseView;
 

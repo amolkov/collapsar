@@ -1,6 +1,5 @@
 package ru.molkov.collapsar.utils;
 
-
 import android.graphics.ColorMatrix;
 import android.util.Property;
 

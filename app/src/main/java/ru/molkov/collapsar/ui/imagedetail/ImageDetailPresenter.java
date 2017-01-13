@@ -10,6 +10,7 @@ import ru.molkov.collapsar.data.core.error.RetrofitException;
 import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.utils.DateUtils;
 import ru.molkov.collapsar.utils.ImageUtils;
+import ru.molkov.collapsar.utils.download.DownloadHelper;
 import ru.molkov.collapsar.utils.share.ShareTask;
 import rx.Observer;
 import rx.Subscription;
@@ -78,7 +79,7 @@ public class ImageDetailPresenter implements ImageDetailContract.Presenter {
 
     @Override
     public void downloadApod(Activity activity) {
-
+        DownloadHelper.getInstance(activity).addDownload(activity, mApod);
     }
 
     @Override

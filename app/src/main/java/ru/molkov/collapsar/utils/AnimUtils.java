@@ -1,6 +1,5 @@
 package ru.molkov.collapsar.utils;
 
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;

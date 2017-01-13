@@ -1,11 +1,15 @@
 package ru.molkov.collapsar.ui.imagedetail;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +35,7 @@ import ru.molkov.collapsar.ui.imagepreview.ImagePreviewActivity;
 import ru.molkov.collapsar.utils.AnimUtils;
 import ru.molkov.collapsar.utils.ImageUtils;
 import ru.molkov.collapsar.utils.ThemeUtils;
+import ru.molkov.collapsar.utils.download.DownloadHelper;
 import ru.molkov.collapsar.utils.glide.PaletteBitmap;
 import ru.molkov.collapsar.utils.glide.PaletteBitmapTranscoder;
 import ru.molkov.collapsar.utils.glide.PaletteBitmapViewTarget;
@@ -39,11 +44,13 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
     public static final String ARGUMENT_APOD_DATE = "APOD_DATE";
     public static final String ARGUMENT_APOD_MEDIA_TYPE = "APOD_MEDIA_TYPE";
     public static final String ARGUMENT_APOD_URL = "APOD_URL";
+    public static final String ARGUMENT_IS_POSTPONE_TRANSITION = "IS_POSTPONE_TRANSITION";
 
     private ImageDetailContract.Presenter mPresenter;
     private String mDate;
     private String mMediaType;
     private String mUrl;
+    private boolean mIsPostponeTransition;
 
     @BindView(R.id.activity_image_detail_app_bar)
     AppBarLayout mAppBarLayout;
@@ -76,12 +83,16 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
 
     @OnClick(R.id.container_image_detail_download_btn)
     public void download() {
-        mPresenter.downloadApod(ImageDetailActivity.this);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            downloadApod();
+        } else {
+            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_ACTION);
+        }
     }
 
     @OnClick(R.id.container_image_detail_share_btn)
     public void share() {
-        mPresenter.shareApod(ImageDetailActivity.this);
+        mPresenter.shareApod(this);
     }
 
     @Override
@@ -93,6 +104,7 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         mDate = getIntent().getStringExtra(ImageDetailActivity.ARGUMENT_APOD_DATE);
         mMediaType = getIntent().getStringExtra(ImageDetailActivity.ARGUMENT_APOD_MEDIA_TYPE);
         mUrl = getIntent().getStringExtra(ImageDetailActivity.ARGUMENT_APOD_URL);
+        mIsPostponeTransition = getIntent().getBooleanExtra(ImageDetailActivity.ARGUMENT_IS_POSTPONE_TRANSITION, false);
 
         initView();
         initTheme();
@@ -100,8 +112,9 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
 
         new ImageDetailPresenter(mDate, Injection.provideApodRepository(getApplicationContext()), this);
         mPresenter.subscribe();
-
-        postponeEnterTransition();
+        if (mIsPostponeTransition) {
+            postponeEnterTransition();
+        }
     }
 
     @Override
@@ -114,17 +127,6 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
     public void onBackPressed() {
         super.onBackPressed();
         mFab.setVisibility(View.INVISIBLE);
-    }
-
-    private void initAnimation() {
-        View titleContainer = findViewById(R.id.container_image_detail_title_container);
-        View actionContainer = findViewById(R.id.container_image_detail_action_container);
-        View contentContainer = findViewById(R.id.container_image_detail_content_container);
-
-        AnimUtils.translationView(titleContainer, 300);
-        AnimUtils.translationView(actionContainer, 350);
-        AnimUtils.translationView(contentContainer, 400);
-        AnimUtils.initFabShow(mFab, 400);
     }
 
     @Override
@@ -150,14 +152,9 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
                             setLightFab();
                             mFab.setBackgroundTintList(ColorStateList.valueOf(palette.getVibrantColor(swatch.getRgb())));
                         }
-
-                        startPostponedEnterTransition();
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        startPostponedEnterTransition();
+                        if (mIsPostponeTransition) {
+                            startPostponedEnterTransition();
+                        }
                     }
                 });
     }
@@ -204,6 +201,35 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestPermission(String permission, int requestCode) {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{permission}, requestCode);
+        } else {
+            downloadApod();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for (int i = 0; i < permissions.length; i++) {
+            switch (permissions[i]) {
+                case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        downloadApod();
+                    } else {
+                        showError(getString(R.string.message_need_permission));
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void downloadApod() {
+        mPresenter.downloadApod(this);
+    }
+
     private void initView() {
         final String toolbarTitle = mMediaType.equalsIgnoreCase("image") ? getString(R.string.title_photo) : getString(R.string.title_video);
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -226,6 +252,10 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
         });
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_left);
         mToolbar.setNavigationOnClickListener(view -> onBackPressed());
+
+        if (!mMediaType.equalsIgnoreCase("image")) {
+            findViewById(R.id.container_image_detail_download_action).setVisibility(View.GONE);
+        }
     }
 
     private void initTheme() {
@@ -238,6 +268,17 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
             ((ImageButton) findViewById(R.id.container_image_detail_share_btn)).setImageResource(R.drawable.ic_send_dark);
             setDarkFab();
         }
+    }
+
+    private void initAnimation() {
+        View titleContainer = findViewById(R.id.container_image_detail_title_container);
+        View actionContainer = findViewById(R.id.container_image_detail_action_container);
+        View contentContainer = findViewById(R.id.container_image_detail_content_container);
+
+        AnimUtils.translationView(titleContainer, 300);
+        AnimUtils.translationView(actionContainer, 350);
+        AnimUtils.translationView(contentContainer, 400);
+        AnimUtils.initFabShow(mFab, 400);
     }
 
     private void setLightFab() {
