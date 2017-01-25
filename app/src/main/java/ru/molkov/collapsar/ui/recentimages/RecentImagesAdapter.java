@@ -25,6 +25,7 @@ import ru.molkov.collapsar.utils.AnimUtils;
 import ru.molkov.collapsar.utils.DateUtils;
 import ru.molkov.collapsar.utils.ImageUtils;
 import ru.molkov.collapsar.utils.ThemeUtils;
+import ru.molkov.collapsar.utils.glide.BitmapCrossfadeListener;
 import ru.molkov.collapsar.utils.glide.PaletteBitmap;
 import ru.molkov.collapsar.utils.glide.PaletteBitmapTranscoder;
 import ru.molkov.collapsar.utils.glide.PaletteBitmapViewTarget;
@@ -63,6 +64,8 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
                 .asBitmap()
                 .transcode(new PaletteBitmapTranscoder(getContext()), PaletteBitmap.class)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .dontAnimate()
+                .listener(new BitmapCrossfadeListener<>())
                 .into(new PaletteBitmapViewTarget(holder.mPhoto) {
                     @Override
                     protected void setResource(PaletteBitmap resource) {
