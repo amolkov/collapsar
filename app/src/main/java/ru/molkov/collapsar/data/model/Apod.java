@@ -5,7 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Apod implements Serializable {
+import ru.molkov.collapsar.data.model.meta.ApodMeta;
+
+public class Apod implements ApodMeta, Serializable {
 
     @SerializedName("copyright")
     private final String mCopyright;
@@ -28,7 +30,7 @@ public class Apod implements Serializable {
     @SerializedName("hdurl")
     private final String mUrlHd;
 
-    public boolean hasFadedIn = false;
+    private boolean hasFadedIn = false;
 
     public Apod(String copyright, Date date, String explanation, String mediaType, String title, String url, String urlHd) {
         mCopyright = copyright;
@@ -66,5 +68,13 @@ public class Apod implements Serializable {
 
     public String getUrlHd() {
         return mUrlHd;
+    }
+
+    public boolean isHasFadedIn() {
+        return hasFadedIn;
+    }
+
+    public void setHasFadedIn(boolean hasFadedIn) {
+        this.hasFadedIn = hasFadedIn;
     }
 }

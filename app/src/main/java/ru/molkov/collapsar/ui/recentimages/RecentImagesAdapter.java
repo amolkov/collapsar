@@ -79,12 +79,12 @@ public class RecentImagesAdapter extends EndlessRecyclerViewAdapter<Apod> {
                             holder.mVideoIcon.setVisibility(View.VISIBLE);
                         }
 
-                        if (!apod.hasFadedIn) {
+                        if (!apod.isHasFadedIn()) {
                             AnimUtils.saturationImage(holder.mPhoto);
                             if (swatch != null) {
                                 AnimUtils.saturationBackground(holder.mContentContainer, palette.getVibrantColor(swatch.getRgb()));
                             }
-                            apod.hasFadedIn = true;
+                            apod.setHasFadedIn(true);
                         } else {
                             if (swatch != null) {
                                 holder.mContentContainer.setBackgroundColor(palette.getVibrantColor(swatch.getRgb()));

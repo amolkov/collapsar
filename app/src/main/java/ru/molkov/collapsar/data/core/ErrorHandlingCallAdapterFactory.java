@@ -49,6 +49,11 @@ public class ErrorHandlingCallAdapterFactory extends CallAdapter.Factory {
             return ((Observable) mWrapped.adapt(call)).onErrorResumeNext(new Func1<Throwable, Observable>() {
                 @Override
                 public Observable call(Throwable throwable) {
+                    // Workaround because there're some "broken" dates and api return 500 error in that case
+                    RetrofitException exception = asRetrofitException(throwable);
+                    if (exception.getKind().equals(RetrofitException.Kind.SERVER)) {
+                        return Observable.just(null);
+                    }
                     return Observable.error(asRetrofitException(throwable));
                 }
             });
