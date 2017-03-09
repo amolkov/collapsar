@@ -108,6 +108,7 @@ public class RecentImagesPresenter implements RecentImagesContract.Presenter {
                     @Override
                     public void onError(Throwable throwable) {
                         Timber.i(throwable, "There was an error refreshing recent images");
+                        mView.setFirstLoadProgress(false);
                         mView.setRefreshIndicator(false);
 
                         processError(throwable);

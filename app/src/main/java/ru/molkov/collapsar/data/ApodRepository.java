@@ -25,17 +25,19 @@ public class ApodRepository implements IRepository<Apod> {
 
     private Map<String, Apod> mCachedData;
 
-    public static ApodRepository getInstance(ILocalDataSource<Apod> localDataSource, IRemoteDataSource<Apod> remoteDataSource) {
+    private ApodRepository(@NonNull ILocalDataSource<Apod> localDataSource,
+                           @NonNull IRemoteDataSource<Apod> remoteDataSource) {
+        mLocalDataSource = checkNotNull(localDataSource);
+        mRemoteDataSource = checkNotNull(remoteDataSource);
+        mCachedData = new HashMap<>();
+    }
+
+    public static ApodRepository getInstance(ILocalDataSource<Apod> localDataSource,
+                                             IRemoteDataSource<Apod> remoteDataSource) {
         if (INSTANCE == null) {
             INSTANCE = new ApodRepository(localDataSource, remoteDataSource);
         }
         return INSTANCE;
-    }
-
-    private ApodRepository(@NonNull ILocalDataSource<Apod> localDataSource, @NonNull IRemoteDataSource<Apod> remoteDataSource) {
-        mLocalDataSource = checkNotNull(localDataSource);
-        mRemoteDataSource = checkNotNull(remoteDataSource);
-        mCachedData = new HashMap<>();
     }
 
     @Override
@@ -52,7 +54,9 @@ public class ApodRepository implements IRepository<Apod> {
             return localApod.filter(apod -> apod != null);
         } else {
             Observable<Apod> remoteApod = mRemoteDataSource.get(date).doOnNext(apod -> create(apod));
-            return Observable.concat(localApod, remoteApod).takeFirst(apod -> apod != null);
+            return Observable
+                    .concat(localApod, remoteApod)
+                    .takeFirst(apod -> apod != null);
         }
     }
 

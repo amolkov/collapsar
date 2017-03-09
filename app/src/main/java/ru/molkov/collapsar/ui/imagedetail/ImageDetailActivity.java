@@ -78,6 +78,7 @@ public class ImageDetailActivity extends AppCompatActivity implements ImageDetai
                 Intent videoIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUrl));
                 startActivity(videoIntent);
                 break;
+            default:
         }
     }
 
