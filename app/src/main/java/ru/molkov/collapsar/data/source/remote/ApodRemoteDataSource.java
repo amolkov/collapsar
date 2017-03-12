@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.Date;
 
+import ru.molkov.collapsar.BuildConfig;
 import ru.molkov.collapsar.data.model.Apod;
 import ru.molkov.collapsar.data.source.remote.api.ApodApi;
 import ru.molkov.collapsar.utils.Constants;
@@ -12,7 +13,7 @@ import rx.Observable;
 
 public class ApodRemoteDataSource extends AbstractRemoteDataSource implements IRemoteDataSource<Apod> {
     private static ApodRemoteDataSource INSTANCE;
-    private static final String NASA_API_KEY = "YOUR_API_KEY";
+    private static final String NASA_API_KEY = BuildConfig.NASA_API_KEY;
     private static final String NASA_API_BASE_URL = "https://api.nasa.gov/planetary/";
 
     private final ApodApi mApodApi;
