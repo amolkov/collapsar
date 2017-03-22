@@ -1,5 +1,6 @@
 # Collapsar
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c6d5ab71a6e45b9997fbc9d5f9264a7)](https://www.codacy.com/app/amolkov/collapsar?utm_source=github.com&utm_medium=referral&utm_content=amolkov/collapsar&utm_campaign=badger)
 [![Build status](https://travis-ci.org/amolkov/collapsar.svg?branch=master)](https://travis-ci.org/amolkov/collapsar)
 [![Codeclimate status](https://lima.codeclimate.com/github/amolkov/collapsar/badges/gpa.svg)](https://lima.codeclimate.com/github/amolkov/collapsar)
 
